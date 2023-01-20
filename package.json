@@ -1,0 +1,22 @@
+{
+  "name": "cards",
+  "version": "1.0.0",
+  "description": "This is a repo for code related to card shuffling and blackjack",
+  "main": "shuffle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbwtech/cards.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jbwtech/cards/issues"
+  },
+  "homepage": "https://github.com/jbwtech/cards#readme",
+  "dependencies": {
+    "seedrandom": "^3.0.5"
+  }
+}
