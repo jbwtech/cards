@@ -1,3 +1,4 @@
+const readline = require('readline');
 const RNG = require('random-seed').create();
 
 const rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
@@ -6,11 +7,10 @@ const suit = ["s", "h", "d", "c" ];
 const decks = 8;
 const shoe = [];
 
-const numCards = 2;
-
-var shoePosition = 0;
-
 const players = [];
+const round = [];
+const minimumBet = 10;
+
 
 function FillTheShoe() {
     for(i=0; i<decks*52; i++) {
@@ -57,101 +57,198 @@ function ShowTheShoe() {
     }
 }
 
-function CreatePlayer(name, amount) {
+function GetNewPlayer(name, amount) {
 
-    var currentPlayer = JSON.parse('{"name": "", "stack": 0}');
+    var currentPlayer = {"name": "", "stack": 0};
 
     currentPlayer.name = name;
     currentPlayer.stack = amount;
 
-    players.push(currentPlayer);
-
-    console.log("Players:");
-    console.log(players);
+    return currentPlayer;
 }
 
-function DealCards() {
-
-    var hand = '{ "wager": 0, "total": 0, "cards": []}';
-
-    for(i=0; i < players.length; i++) {
-
-        const playerHands = [];
-        const handNum = playerHands.length;
-        console.log("Hand Number");
-        console.log(handNum);
-
-        if(handNum ) {
-            console.log(players[i][1]);
-            //hand = players[i-1][1];
-        }
-
-        var currentHand = JSON.parse(hand);
-        currentHand.cards.push(GetNextCardInShoe());
-        console.log(currentHand);
-
-        players[i][1] = currentHand;
-        console.log(players[i]);
-
-        //  players[i-1][1][handNum].push(GetNextCardInShoe());
-    }    
-    return 0;
-}
-
-function GetNextCardInShoe() {
-    console.log(`Shoe Position: ${shoePosition}`);
-    return shoe[shoePosition++];
+function CardValue(card) {
+    switch (card % 13) {
+        case 0:
+            return 11;
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+            return 10;
+        default:
+            return ((card % 13) + 1);
+    }
 }
 
 function HandValue(cards) {
 
     var handTotal = 0;
-    var aces = 0;
 
-    console.log(cards);
-    console.log(cards.length);
+    cards.forEach((card) => {
+    
+        var value = CardValue(card);
 
-    for( i=0; i < cards.length; i++) { 
- 
-        tempCard = cards[i] % 13;
-
-        switch (tempCard) {
-            case 0:
-                if( aces == 0 ) {
-                    handTotal += 11;
-                    aces++;
-                } else {
-                    handTotal += 1;
-                }
-                break;
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-                handTotal += 10;
-                break;
-            default:
-                handTotal = handTotal + ((cards[i]%13) + 1);
+        if( (value == 11) && (handTotal + value) > 21 ) {
+            value = 1;
         }
-    }
+
+        handTotal += value;
+    })
 
     return handTotal;
 }
 
-CreatePlayer("Sam", 1000);
-CreatePlayer("Wanda", 500);
+function CreateHand(obj, amount) {
+    const hand = {"name": "", "cards": [], "status": "Open", "wager": 0};
+
+    if( obj.stack >= amount ) {
+        obj.stack -= amount;
+        hand.name = obj.name;
+        hand.wager = amount;
+        return hand;
+    } else {
+        return null;
+    }
+}
+
+function InitialDeal() {
+    for(i=0; i<2; i++) {
+        round.forEach((obj) => { 
+            obj.cards.push(shoe.pop());
+        })    
+    }
+}
+
+async function PlayRound() {
+    console.log('Hands:\n');
+    console.log(round);
+    console.log('\n');
+    
+    if( (dealer.cards[1] % 13) == 0 ) {
+        console.log("Insurance?");
+    }
+    var dealer_blackjack = false;
+    if( HandValue(dealer.cards) == 21 ) {
+        console.log("Dealer Has Blackjack!");
+        dealer_blackjack = true;
+        round.forEach((obj) => {
+            if( HandValue(obj.cards) == 21 ) {
+                obj.status = "Push";
+            } else {
+                obj.status = "Lose";
+            }
+        })
+    }
+
+    var cardsText = "";
+
+    round.forEach((obj) => {
+    
+        const playerAction = "";
+    
+        console.log(`Player: ${obj.name}`);
+
+
+        obj.cards.forEach((card, index ) => {
+            if( index == 0 ) {
+                cardsText = ShowCard(card) + " ";
+            } else {
+                cardsText += ShowCard(card);
+            }
+        })
+        
+        console.log(cardsText);
+        console.log(`Bet: ${obj.wager}`)
+        console.log(`Hand Score: ${HandValue(obj.cards)}`);
+
+        while((obj.status !== "Stand") && ! dealer_blackjack) {
+
+            if( HandValue(obj.cards) == 21 ) {
+                obj.status = "Stand";
+            }
+
+            var action = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+
+            if( (CardValue(obj.cards[0]) == CardValue(obj.cards[1])) && obj.cards.length < 3 ) {
+                action.question("Split? (y/N): ", function (answer) {
+                    console.log(`Decision to split: ${answer}`);
+                    action.close();
+                });
+            }
+
+            if( obj.cards.length < 3 ) {
+                action.question("H)it  S)tand  D)ouble: ", function (answer) {
+                    console.log(`Action: ${answer}`);
+                    action.close();
+                });
+            } else {
+                action.question("H)it  S)tand: ", function (answer) {
+                    console.log(`Action: ${answer}`);
+                    action.close();
+                });
+            }
+
+            obj.status = "Stand";
+        }
+        console.log("");
+
+    })
+
+    if( ! dealer_blackjack ) {
+        cardsText = "XX ";
+        cardsText += ShowCard(dealer.cards[1])
+    } else {
+        cardsText = ShowCard(dealer.cards[0]) + " ";
+        cardsText += ShowCard(dealer.cards[1]);
+    }
+
+    console.log('\n');
+}
+
+function DealMeIn(obj) {
+    // Add logic to ask player for a bet
+    return minimumBet;
+}
+
+// End of Functions
+
+players.push(GetNewPlayer("Sam", 1000));
+players.push(GetNewPlayer("Wanda", 500));
+players.push(GetNewPlayer("Brent", 1000));
+players.push(GetNewPlayer("Maritza", 1000));
+
+const dealer = {"name": "Dealer", "cards": [], "status": "Open"};
 
 FillTheShoe();
 Shuffle();
 //ShowTheShoe();
 
-var rounds = [{"name": "", "wager": 0, "score": 0, "cards": []}];
 
-rounds[0]["name"] = "Booger";
+players.forEach((obj) => {
 
-console.log(rounds);
+    const wager = DealMeIn(obj);
+
+    if( wager > 0 ) {
+        var temp = CreateHand(obj, wager);
+
+        if( temp !== null) {
+            round.push(temp);
+        } else {
+            console.log('Error');
+        }
+    }
+
+})
+
+console.log(`Cards Remaining: ${shoe.length}\n`);
+
+InitialDeal();
+PlayRound();
+
+console.log(`Cards Remaining: ${shoe.length}\n`);
 
 return 0;
-
-DealCards(2);
-
