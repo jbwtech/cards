@@ -1,3 +1,4 @@
+
 const readline = require('readline');
 const RNG = require('random-seed').create();
 
@@ -43,18 +44,6 @@ function ShowCard(card) {
 
     return `${rank[card%13]}${suit[Math.trunc(card/13)]}` ;
 
-}
-
-function ShowTheShoe() {
-    for(i=0; i<shoe.length; i++) {
-
-        const j = Math.trunc(shoe[i] / 52);
-        const k = shoe[i] - (j*52);
-        const l = Math.trunc(k/13);
-        const m = k - (l*13);
-    
-        console.log(`shoe[${i}]:  ${rank[m]}${suit[l]}  ${shoe[i]}`);
-    }
 }
 
 function GetNewPlayer(name, amount) {
@@ -220,6 +209,9 @@ players.push(GetNewPlayer("Sam", 1000));
 players.push(GetNewPlayer("Wanda", 500));
 players.push(GetNewPlayer("Brent", 1000));
 players.push(GetNewPlayer("Maritza", 1000));
+
+console.log(players);
+return 0;
 
 const dealer = {"name": "Dealer", "cards": [], "status": "Open"};
 
