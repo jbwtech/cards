@@ -1,224 +1,217 @@
 
-const readline = require('readline');
-const RNG = require('random-seed').create();
-
-const rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
-const suit = ["s", "h", "d", "c" ];
-  
-const shoe = require('./modules/shoe');
+const readline = require('readline-sync');
+const utils = require('./modules/utils');
 
 const players = [];
 const round = [];
-const minimumBet = 10;
-
-
-function ShowCard(card) {
-
-    card = card % 52;
-
-    return `${rank[card%13]}${suit[Math.trunc(card/13)]}` ;
-
-}
-
-function GetNewPlayer(name, amount) {
-
-    var currentPlayer = {"name": "", "stack": 0};
-
-    currentPlayer.name = name;
-    currentPlayer.stack = amount;
-
-    return currentPlayer;
-}
-
-function CardValue(card) {
-    switch (card % 13) {
-        case 0:
-            return 11;
-        case 9:
-        case 10:
-        case 11:
-        case 12:
-            return 10;
-        default:
-            return ((card % 13) + 1);
-    }
-}
-
-function HandValue(cards) {
-
-    var handTotal = 0;
-
-    cards.forEach((card) => {
-    
-        var value = CardValue(card);
-
-        if( (value == 11) && (handTotal + value) > 21 ) {
-            value = 1;
-        }
-
-        handTotal += value;
-    })
-
-    return handTotal;
-}
-
-function CreateHand(obj, amount) {
-    const hand = {"name": "", "cards": [], "status": "Open", "wager": 0};
-
-    if( obj.stack >= amount ) {
-        obj.stack -= amount;
-        hand.name = obj.name;
-        hand.wager = amount;
-        return hand;
-    } else {
-        return null;
-    }
-}
 
 function InitialDeal() {
     for(i=0; i<2; i++) {
-        round.forEach((obj) => { 
-            obj.cards.push(shoe.GetCard());
-        })    
+        // Deal Crads to players
+        round.forEach((player) => { 
+            player.cards.push(shoe.pop());
+        })
+        // Deal Cards to delaer
+        dealer.cards.push(shoe.pop());
     }
 }
 
 async function PlayRound() {
-    console.log('Hands:\n');
-    console.log(round);
-    console.log('\n');
-    
-    if( (dealer.cards[1] % 13) == 0 ) {
-        console.log("Insurance?");
-    }
-    var dealer_blackjack = false;
-    if( HandValue(dealer.cards) == 21 ) {
+
+    var cardsText = "";
+
+    if( utils.HandValue(dealer.cards) == 21 ) {
+
+        console.log("Dealer:");
+        cardsText = utils.GetCardText(dealer.cards[0]) + " ";
+        cardsText += utils.GetCardText(dealer.cards[1]);
+        console.log(cardsText);
+
         console.log("Dealer Has Blackjack!");
-        dealer_blackjack = true;
+
         round.forEach((obj) => {
-            if( HandValue(obj.cards) == 21 ) {
+            // Check for insurance
+            if( utils.HandValue(obj.cards) == 21 ) {
                 obj.status = "Push";
             } else {
                 obj.status = "Lose";
             }
         })
+        // settle wagers
+        return;
     }
 
-    var cardsText = "";
-
-    round.forEach((obj) => {
-    
-        const playerAction = "";
-    
-        console.log(`Player: ${obj.name}`);
-
-
-        obj.cards.forEach((card, index ) => {
-            if( index == 0 ) {
-                cardsText = ShowCard(card) + " ";
-            } else {
-                cardsText += ShowCard(card);
-            }
-        })
-        
+    if( (dealer.cards[1] % 13) == 0 ) {
+        console.log("Dealer:");
+        cardsText = "XX ";
+        cardsText += utils.GetCardText(dealer.cards[1])
         console.log(cardsText);
-        console.log(`Bet: ${obj.wager}`)
-        console.log(`Hand Score: ${HandValue(obj.cards)}`);
+        console.log("");
+        console.log("Insurance?");
+        // handle insurance for players in round
+    }
 
-        while((obj.status !== "Stand") && ! dealer_blackjack) {
+    round.forEach((player) => {
+    
+        const playerAction = {"H": "hit", "S": "stand", "D": "double", "y": "split", "N": "no split"};
+    
+        console.log("Dealer:");
+        cardsText = "XX ";
+        cardsText += utils.GetCardText(dealer.cards[1])
+        console.log(cardsText);
+        console.log("");
 
-            if( HandValue(obj.cards) == 21 ) {
-                obj.status = "Stand";
+        console.log(`Player: ${player.name}`);
+        console.log(`Bet: ${player.wager}`)
+        console.log("");
+
+        while( player.status == "Open" ) {
+
+            cardsText = "";
+        
+            player.cards.forEach((card) => {
+                cardsText = cardsText + utils.GetCardText(card) + " ";
+            })
+            
+            console.log(cardsText);
+            player.score = utils.HandValue(player.cards);
+
+            if( player.score == 21) {
+                console.log("Blackjack!!");
+                break;
+            }
+            console.log(`Hand Score: ${utils.HandValue(player.cards)}`);
+
+            var action = "";
+
+            if( (utils.GetCardValue(player.cards[0]) == utils.GetCardValue(player.cards[1])) && player.cards.length < 3 ) {
+                action = readline.question("Split? (y/N): ");
+                console.log("");
             }
 
-            var action = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout
-            });
-
-            if( (CardValue(obj.cards[0]) == CardValue(obj.cards[1])) && obj.cards.length < 3 ) {
-                action.question("Split? (y/N): ", function (answer) {
-                    console.log(`Decision to split: ${answer}`);
-                    action.close();
-                });
-            }
-
-            if( obj.cards.length < 3 ) {
-                action.question("H)it  S)tand  D)ouble: ", function (answer) {
-                    console.log(`Action: ${answer}`);
-                    action.close();
-                });
+            if( player.cards.length < 3 ) {
+                action = readline.question("H)it  S)tand  D)ouble: ");
+                console.log("");
             } else {
-                action.question("H)it  S)tand: ", function (answer) {
-                    console.log(`Action: ${answer}`);
-                    action.close();
-                });
+                action = readline.question("H)it  S)tand: ");
+                console.log("");
             }
 
-            obj.status = "Stand";
+            switch(action) {
+                case "H":
+                    temp = shoe.pop();
+                    player.cards.push(temp);
+                    cardsText = cardsText + utils.GetCardText(temp) + " ";
+                    console.log(cardsText);
+                    player.score = utils.HandValue(player.cards);
+                    if( player.score > 21 ) {
+                        player.status = "Bust";
+                        console.log("Bust");
+                    }
+                    if( player.score == 21 ) {
+                        player.status = "Stand";
+                    }
+                    break;
+                case "D":
+                    temp = shoe.pop();
+                    player.cards.push(temp);
+                    player.wager *= 2;
+                    cardsText = cardsText + utils.GetCardText(temp) + " ";
+                    console.log(cardsText);
+                    player.score = utils.HandValue(player.cards);
+                    if( player.score > 21 ) {
+                        player.status = "Bust";
+                        console.log("Bust");
+                    } else {
+                        player.status = "Stand";
+                    }
+                    break;
+                case "S":
+                    player.score = utils.HandValue(player.cards);
+                    player.status = "Stand";
+                    break;
+            }
         }
         console.log("");
 
     })
 
-    if( ! dealer_blackjack ) {
-        cardsText = "XX ";
-        cardsText += ShowCard(dealer.cards[1])
-    } else {
-        cardsText = ShowCard(dealer.cards[0]) + " ";
-        cardsText += ShowCard(dealer.cards[1]);
-    }
-
     console.log('\n');
 }
 
-function DealMeIn(obj) {
-    // Add logic to ask player for a bet
-    return minimumBet;
+function PlayDealer() {
+
+    console.log("Dealer:");
+
+    var cardsText = "";
+    console.log(cardsText);
+
+    dealer.cards.forEach((card) => {
+        cardsText = cardsText + utils.GetCardText(card) + " ";
+    });
+    dealer.score = utils.HandValue(dealer.cards);
+
+    while( true ) {
+        dealer.score = utils.HandValue(dealer.cards);
+
+        if( dealer.score < 17 ) {
+            dealer.cards.push(shoe.pop());
+        } else {
+            break;
+        }
+
+        cardsText = "";
+        dealer.cards.forEach((card) => {
+            cardsText = cardsText + utils.GetCardText(card) + " ";
+        });
+        console.log(cardsText);
+    }
+
+    if( dealer.score > 21 ) {
+        dealer.status = "Bust";
+    }
+    console.log(cardsText);
+    console.log("Score: ");
+    console.log(dealer.score);
+
+    console.log(dealer);
 }
 
 // End of Functions
 
-players.push(GetNewPlayer("Sam", 1000));
-players.push(GetNewPlayer("Wanda", 500));
-players.push(GetNewPlayer("Brent", 1000));
-players.push(GetNewPlayer("Maritza", 1000));
+const shoe = utils.CreateShoe(8);
+
+players.push(utils.CreatePlayer("Sam", 1000));
+players.push(utils.CreatePlayer("Wanda", 500));
+players.push(utils.CreatePlayer("Brent", 1000));
+players.push(utils.CreatePlayer("Maritza", 1000));
 
 console.log(players);
+console.log("");
 
-const dealer = {"name": "Dealer", "cards": [], "status": "Open"};
-
-shoe.Fill();
-shoe.Shuffle();
-//shoe.Show();
-console.log(shoe);
+const dealer = {"name": "Dealer", "cards": [], "status": "Open", "score": 0};
 
 players.forEach((obj) => {
 
-    const wager = DealMeIn(obj);
+    const wager = utils.DealMeIn(obj);
 
     if( wager > 0 ) {
-        var temp = CreateHand(obj, wager);
-
-        if( temp !== null) {
-            round.push(temp);
-        } else {
-            console.log('Error');
+        var hand = utils.CreateHand(obj, wager);
+    
+        if( hand !== null) {
+            round.push(hand);
         }
     }
 
 })
-
-console.log(`Cards Remaining: ${shoe.Cards()}\n`);
-
-InitialDeal();
-
-console.log(round);
  
-console.log(`Cards Remaining: ${shoe.Cards()}\n`);
-
-return 0;
+InitialDeal();
 
 PlayRound();
 
+PlayDealer();
+
+console.log(`Cards Remaining: ${shoe.length}\n`);
+
+console.log(round);
 return 0;
