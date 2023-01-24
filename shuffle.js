@@ -78,7 +78,7 @@ function CreateHand(obj, amount) {
 function InitialDeal() {
     for(i=0; i<2; i++) {
         round.forEach((obj) => { 
-            obj.cards.push(shoe.pop());
+            obj.cards.push(shoe.GetCard());
         })    
     }
 }
@@ -191,6 +191,7 @@ const dealer = {"name": "Dealer", "cards": [], "status": "Open"};
 shoe.Fill();
 shoe.Shuffle();
 //shoe.Show();
+console.log(shoe);
 
 players.forEach((obj) => {
 
@@ -208,13 +209,16 @@ players.forEach((obj) => {
 
 })
 
-console.log(`Cards Remaining: ${shoe.length}\n`);
+console.log(`Cards Remaining: ${shoe.Cards()}\n`);
+
+InitialDeal();
+
+console.log(round);
+ 
+console.log(`Cards Remaining: ${shoe.Cards()}\n`);
 
 return 0;
 
-InitialDeal();
 PlayRound();
-
-console.log(`Cards Remaining: ${shoe.length}\n`);
 
 return 0;

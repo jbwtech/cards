@@ -16,7 +16,6 @@ function Fill( numDecks ) {
 // Function which shuffle and print the array
 function Shuffle()
 {
-    shoePosition = 0;
     // Initialize seed randomly
     RNG.seed(Date.now());
   
@@ -44,9 +43,17 @@ function Show() {
     }
 }
 
+function Cards() {
+    return shoe.length;
+}
+
+function GetCard() {
+    return shoe.pop();
+}
 module.exports = {
-    shoe,
     Fill,
     Show,
-    Shuffle
+    Shuffle,
+    Cards,
+    GetCard
 }
