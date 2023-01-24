@@ -5,38 +5,12 @@ const RNG = require('random-seed').create();
 const rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
 const suit = ["s", "h", "d", "c" ];
   
-const decks = 8;
-const shoe = [];
+const shoe = require('./modules/shoe');
 
 const players = [];
 const round = [];
 const minimumBet = 10;
 
-
-function FillTheShoe() {
-    for(i=0; i<decks*52; i++) {
-        shoe.push(i);
-    }
-}
-
-// Function which shuffle and print the array
-function Shuffle()
-{
-    shoePosition = 0;
-    // Initialize seed randomly
-    RNG.seed(Date.now());
-  
-    for (i=shoe.length-1; i>=0; i--)
-    {
-        // Random for remaining positions.
-        const r = (RNG.range(i));
-        //console.log(`i: ${i} r: ${r}`);
-
-        temp = shoe[i];
-        shoe[i]= shoe[r];
-        shoe[r] = temp;
-    }
-}
 
 function ShowCard(card) {
 
@@ -211,14 +185,12 @@ players.push(GetNewPlayer("Brent", 1000));
 players.push(GetNewPlayer("Maritza", 1000));
 
 console.log(players);
-return 0;
 
 const dealer = {"name": "Dealer", "cards": [], "status": "Open"};
 
-FillTheShoe();
-Shuffle();
-//ShowTheShoe();
-
+shoe.Fill();
+shoe.Shuffle();
+//shoe.Show();
 
 players.forEach((obj) => {
 
@@ -237,6 +209,8 @@ players.forEach((obj) => {
 })
 
 console.log(`Cards Remaining: ${shoe.length}\n`);
+
+return 0;
 
 InitialDeal();
 PlayRound();

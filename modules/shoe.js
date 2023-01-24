@@ -1,4 +1,13 @@
-function FillTheShoe() {
+const RNG = require('random-seed').create();
+
+const rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
+const suit = ["s", "h", "d", "c" ];
+  
+const decks = 8;
+
+const shoe = [];
+
+function Fill( numDecks ) {
     for(i=0; i<decks*52; i++) {
         shoe.push(i);
     }
@@ -35,3 +44,9 @@ function Show() {
     }
 }
 
+module.exports = {
+    shoe,
+    Fill,
+    Show,
+    Shuffle
+}
