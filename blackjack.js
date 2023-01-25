@@ -21,32 +21,42 @@ async function PlayRound() {
 
     var cardsText = "";
 
-    if( (dealer.cards[1] % 13) == 0 ) {
-        console.log("Dealer:");
-        cardsText = "XX ";
-        cardsText += utils.GetCardText(dealer.cards[1])
-        console.log(cardsText);
-        console.log("");
+    console.log("Dealer:");
+    cardsText = utils.GetCardText(dealer.cards[0]) + " XX";
+    console.log(cardsText);
+    console.log("");
+
+    if( (dealer.cards[0] % 13) == 0 ) {
         round.forEach((hand) => {
-            var insurance = readline.question(`${hand.name}: Insurance? y/N `);
+            var insurance = readline.question(`${hand.name}: Insurance? (y/N): `);
             if( insurance == "y" ) {
+                const player = GetPlayer(hand.name);
+                player.stack -= (hand.wager/2);
                 hand.insurance = true;
+                console.log(`Insurance Bought: ${hand.wager/2}`);
             }
         });
     }
 
     if( utils.HandValue(dealer.cards) == 21 ) {
 
-        console.log("Dealer:");
         cardsText = utils.GetCardText(dealer.cards[0]) + " ";
         cardsText += utils.GetCardText(dealer.cards[1]);
-        console.log(cardsText);
 
         console.log("Dealer Has Blackjack!");
+        console.log(cardsText);
+        console.log("");
 
         round.forEach((hand) => {
 
-            hand.score = utils.HandValue(player.cards);
+            cardsText = "";
+
+            hand.score = utils.HandValue(hand.cards);
+            hand.cards.forEach((card) => {
+                cardsText = cardsText + utils.GetCardText(card) + " ";
+            });
+
+            hand.cardsText = cardsText;
 
             // Check for insurance
             if( hand.insurance == true ) {
@@ -57,9 +67,17 @@ async function PlayRound() {
             } else {
                 hand.status = "Lose";
             }
-        })
-        // settle wagers
+        });
         return;
+    } else {
+        round.forEach((hand) => {
+            if( hand.insurance == true ) {
+                hand.status = "Open";
+                hand.insurance = false;
+                console.log("Dealer does not have Blackjack");
+                console.log(`${hand.name}, your insurance is lost.`);
+            }
+        });
     }
 
     round.forEach((hand) => {
@@ -67,8 +85,7 @@ async function PlayRound() {
         const playerAction = {"H": "hit", "S": "stand", "D": "double", "y": "split", "N": "no split"};
     
         console.log("Dealer:");
-        cardsText = "XX ";
-        cardsText += utils.GetCardText(dealer.cards[1])
+        cardsText = utils.GetCardText(dealer.cards[0]) + " XX";
         console.log(cardsText);
         console.log("");
 
@@ -117,13 +134,12 @@ async function PlayRound() {
                     cardsText = cardsText + utils.GetCardText(temp) + " ";
                     hand.cardsText = cardsText;
                     hand.score = utils.HandValue(hand.cards);
+                    console.log(cardsText);
                     if( hand.score > 21 ) {
-                        console.log(cardsText);
                         hand.status = "Bust";
                         console.log("*** Bust ***");
                     }
                     if( hand.score == 21 ) {
-                        console.log(cardsText);
                         hand.status = "Stand";
                         console.log("*** Stand (Automatic at 21) ***");
                     }
@@ -131,6 +147,8 @@ async function PlayRound() {
                 case "D":
                     temp = shoe.pop();
                     hand.cards.push(temp);
+                    const player = GetPlayer( player );
+                    player.stack -= hand.wager;
                     hand.wager *= 2;
                     cardsText = cardsText + utils.GetCardText(temp) + " ";
                     hand.cardsText = cardsText;
@@ -141,7 +159,6 @@ async function PlayRound() {
                     } else {
                         hand.status = "Stand";
                     }
-                    console.log(cardsText);
                     console.log("*** Doubled ***");
                     break;
                 case "S":
@@ -149,6 +166,8 @@ async function PlayRound() {
                     hand.status = "Stand";
                     break;
             }
+            console.log(cardsText);
+            console.log(`Hand Score: ${hand.score}`);
         }
         console.log("");
 
@@ -197,8 +216,34 @@ function PlayDealer() {
     console.log("");
 }
 
+function GetPlayer(name) {
+    return players.find( function(player) {
+        return player.name == name;
+    });
+}
+
 function ScoreRound() {
     round.forEach((hand) => {
+
+        const player = GetPlayer(hand.name);
+
+        console.log(hand);
+
+        switch( hand.status ) {
+            case "Win":
+                if( (hand.score == 21) && (hand.cards.length == 2) ) {
+                    player.stack += (hand.wager + (hand.wager * 1.5));
+                } else {
+                    player.stack += (hand.wager*2);
+                }
+                break;
+            case "Push":
+            case "Insured":
+                player.stack += hand.wager;
+                break;
+        }
+
+/*
         if( hand.status == "Win" ) {
             players.forEach( (player, index) => {
                 if( player.name == hand.name ) {
@@ -210,8 +255,9 @@ function ScoreRound() {
                     console.log(players[index]);
                     return;
                 }
-            });    
+            });
         }
+*/
     })    
 }
 
@@ -242,6 +288,9 @@ function ShowOutcomes() {
                         break;
                     }
                 }
+            case "Insured":
+                outcome = "Insurance Payout";
+                break;
             case "Bust":
                 outcome = "Bust";
         }
