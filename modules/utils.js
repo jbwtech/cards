@@ -82,20 +82,14 @@ function HandValue(cards) {
 
         if( (card % 13) == 0 ) {
             aces++;
-            return;
-        } else {
-            handTotal += value;
         }
+
+        handTotal += value;
     })
 
-    while( aces > 0 ) {
-        if( (handTotal + 11) > 21 ) {
-            handTotal++;
-            aces--;
-        } else {
-            handTotal += 11;
-            aces--;
-        }
+    while( (aces > 0) && (handTotal > 21) ) {
+        aces--;
+        handTotal -= 10;
     }
 
     return handTotal;
