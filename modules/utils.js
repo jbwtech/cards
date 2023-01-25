@@ -74,22 +74,35 @@ function HandValue(cards) {
 
     var handTotal = 0;
 
+    var aces = 0;
+
     cards.forEach((card) => {
     
         var value = GetCardValue(card);
 
-        if( (value == 11) && (handTotal + value) > 21 ) {
-            value = 1;
+        if( (card % 13) == 0 ) {
+            aces++;
+            return;
+        } else {
+            handTotal += value;
         }
-
-        handTotal += value;
     })
+
+    while( aces > 0 ) {
+        if( (handTotal + 11) > 21 ) {
+            handTotal++;
+            aces--;
+        } else {
+            handTotal += 11;
+            aces--;
+        }
+    }
 
     return handTotal;
 }
 
 function CreateHand(obj, amount) {
-    const hand = {"name": "", "cards": [], "status": "Open", "wager": 0, "insurance": false, "score": 0};
+    const hand = {"name": "", "cards": [], "status": "Open", "wager": 0, "insurance": false, "score": 0, "cardsText": ""};
 
     if( obj.stack >= amount ) {
         obj.stack -= amount;
