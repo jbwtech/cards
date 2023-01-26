@@ -35,17 +35,6 @@ function CreateShoe( numDecks ) {
     return shoe;
 }
 
-function DisplayShoe(shoe) {
-    for(i=0; i<shoe.length; i++) {
-
-        const j = Math.trunc(shoe[i] / 52);
-        const k = shoe[i] - (j*52);
-        const l = Math.trunc(k/13);
-        const m = k - (l*13);
-    
-        console.log(`shoe[${i}]:  ${rank[m]}${suit[l]}  ${shoe[i]}`);
-    }
-}
 
 
 function GetCardValue(card) {

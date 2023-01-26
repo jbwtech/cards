@@ -6,6 +6,8 @@ var runningCount = 0;
 
 console.log(choe.CardsLeft());
 
+choe.Show();
+
 while(choe.CardsLeft() > 0) {
 
     const currentCard = choe.GetCard();
@@ -43,3 +45,5 @@ console.log(choe.CardsLeft());
 const squeaky = new Shoe();
 
 console.log(squeaky.CardsLeft());
+
+squeaky.Show();

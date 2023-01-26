@@ -1,7 +1,15 @@
+const { Card } = require('./card.js');
+
 const RNG = require('random-seed').create();
 
-const rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
-const suit = ["s", "h", "d", "c" ];
+function DisplayShoe(shoe) {
+    for(i=0; i<shoe.length; i++) {
+
+        const theCard = new Card(shoe[i] % 52);
+
+        console.log(`shoe[${i}]:  ${theCard.text}  ${theCard.number}`);
+    }
+}
 
 class Shoe {
 
@@ -17,11 +25,6 @@ class Shoe {
         for( var i=0; i < (this.decks * 52); i++) {
             this.shoe.push(i);
         }
-
-        this.Shuffle();
-    }
-
-    Shuffle() {
 
         // Initialize seed randomly
         RNG.seed(Date.now());
@@ -42,9 +45,11 @@ class Shoe {
     }
 
     GetCard() {
-        const card = this.shoe.pop() % 52;
+        return this.shoe.pop() % 52;
+    }
 
-        return rank[card%13] + suit[Math.trunc(card/13)];
+    Show() {
+        DisplayShoe(this.shoe);
     }
 }
 
