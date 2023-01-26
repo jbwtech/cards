@@ -35,4 +35,5 @@ console.log(dealer);
 
 dealer.hand.AddCard(new Card(shoe.GetCard()));
 dealer.hand.AddCard(new Card(shoe.GetCard()));
+
 console.log(dealer);
