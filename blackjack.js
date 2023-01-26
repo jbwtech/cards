@@ -2,6 +2,8 @@
 const readline = require('readline-sync');
 const utils = require('./modules/utils');
 
+const { Shoe } = require('./classes/shoe.js');
+
 const players = [];
 var round = [];
 var dealer = {"name": "Dealer", "cards": [], "status": "Open", "score": 0};

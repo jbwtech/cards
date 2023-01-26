@@ -2,7 +2,7 @@
   "name": "cards",
   "version": "1.0.0",
   "description": "This is a repo for code related to card shuffling and blackjack",
-  "main": "shuffle.js",
+  "main": "blackjack.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
