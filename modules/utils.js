@@ -118,7 +118,6 @@ module.exports = {
     DealMeIn,
     CreatePlayer,
     CreateShoe,
-    DisplayShoe,
     HandValue,
     CreateHand
 }
