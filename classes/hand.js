@@ -83,7 +83,7 @@ function AddCard(hand, cardObject) {
     }
 
     if( hand.doubled == true ) {
-        hand.status == "Stand";
+        hand.status = "Stand";
         return;
     }
 }
