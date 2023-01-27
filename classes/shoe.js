@@ -2,19 +2,10 @@ const { Card } = require('./card.js');
 
 const RNG = require('random-seed').create();
 
-function DisplayShoe(shoe) {
-    for(i=0; i<shoe.length; i++) {
-
-        const theCard = new Card(shoe[i] % 52);
-
-        console.log(`shoe[${i}]:  ${theCard.text}  ${theCard.number}`);
-    }
-}
-
 class Shoe {
 
     decks = 2;
-    shoe = [];
+    shoe = new Array();
 
     constructor( number_of_decks ) {
 
@@ -45,11 +36,21 @@ class Shoe {
     }
 
     GetCard() {
-        return this.shoe.pop() % 52;
+        const theCard = new Card(this.shoe.pop());
+        return theCard;
     }
 
     Show() {
         DisplayShoe(this.shoe);
+    }
+}
+
+function DisplayShoe(shoe) {
+    for(i=0; i<shoe.length; i++) {
+
+        const theCard = new Card(shoe[i] % 52);
+
+        console.log(`shoe[${i}]:  ${theCard.text}  ${theCard.number}`);
     }
 }
 
