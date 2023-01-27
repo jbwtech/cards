@@ -1,5 +1,18 @@
 
 
+class Card {
+
+    constructor(cardNumber) {
+        this.number = cardNumber % 52;
+        this.text = GetCardText(this.number);
+        this.value = GetValueByNumber(this.number);
+    }
+
+    static rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
+    static suit = ["s ", "h ", "d ", "c " ];
+
+}
+
 function GetCardText(cardNumber) {
 
     var temp = cardNumber % 52;
@@ -9,9 +22,7 @@ function GetCardText(cardNumber) {
 
 function GetValueByNumber(cardNumber) {
 
-    const theCard = cardNumber % 13;
-
-    switch (theCard) {
+    switch (cardNumber % 13) {
         case 0:
             return 11;
         case 9:
@@ -20,21 +31,8 @@ function GetValueByNumber(cardNumber) {
         case 12:
             return 10;
         default:
-            return (theCard + 1);
+            return ((cardNumber % 13) + 1);
     }
-}
-
-class Card {
-
-    constructor(cardNumber) {
-        this.number = cardNumber;
-        this.text = GetCardText(this.number);
-        this.value = GetValueByNumber(this.number);
-    }
-
-    static rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
-    static suit = ["s ", "h ", "d ", "c " ];
-
 }
 
 module.exports = { Card }
