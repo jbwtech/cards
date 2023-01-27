@@ -1,18 +1,27 @@
-const { PlayerHand, Hand } = require('./hand.js');
+const { PlayerHand, DealerHand } = require('./hand.js');
 
 class Dealer {
-    constructor(name, amount) {
+    constructor() {
+        this.id = -1;
         this.name = "Dealer";
-        this.hand = new Hand();
+        this.hand = Dealer.CreateHand();
+        this.hand.playerID = this.id;
+    }
+
+    static CreateHand() {
+        const hand = new DealerHand();
+        return hand;
     }
 }
 
 class Player {
     constructor(name, amount) {
+        this.id = Player.id++;
         this.name = name;
         this.stack = amount;
-        this.hands = [];
     }
+
+    static id = 0
 
     CreateHand( wager ) {
 
@@ -22,12 +31,11 @@ class Player {
             // Deduct amount from player's stack
             this.stack -= wager;
 
-            // Add the name and wager to the hand object
+            // Add the player ID and wager to the hand object
             hand.wager = wager;
+            hand.playerID = this.id;
 
-            this.hands.push(hand);
-
-            return hand.id;
+            return hand;
         } else {
             return null;
         }
