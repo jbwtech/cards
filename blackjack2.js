@@ -183,10 +183,7 @@ function ScoreRound(round, dealer) {
 }
 
 const players = new Array();
-
-var shoe = new Shoe(8);
-var numberOfRounds = 0;
-
+const shoe = new Shoe(8);
 const minimumBet = 5;
 const startingBank = 500;
 
@@ -198,6 +195,8 @@ players.push(new Player("Player 4", startingBank));
 players.push(new Player("Player 5", startingBank));
 players.push(new Player("Player 6", startingBank));
 
+var numberOfRounds = 0;
+
 while( true ) {
 
     const round = new Array();
@@ -206,7 +205,7 @@ while( true ) {
     console.log("");
 
     players.forEach((player) => {
-        var hand = player.CreateHand(5);
+        var hand = player.CreateHand(minimumBet);
     
         if( hand !== null) {
             round.push(hand);
