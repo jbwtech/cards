@@ -19,6 +19,7 @@ class Player {
         this.id = Player.id++;
         this.name = name;
         this.stack = amount;
+        this.max_stack = 0;
     }
 
     static id = 0
@@ -38,6 +39,13 @@ class Player {
             return hand;
         } else {
             return null;
+        }
+    }
+
+    GivePayout(amount) {
+        this.stack += amount;
+        if( this.stack > this.max_stack ) {
+            this.max_stack = this.stack;
         }
     }
 }
