@@ -4,56 +4,60 @@ const RNG = require('random-seed').create();
 
 class Shoe {
 
-    constructor( number_of_decks ) {
+    #decks = 2;
+    #shoe = null;
 
-        this.decks = 2;
+    constructor( number_of_decks ) {
     
         if( number_of_decks !== undefined ) {
-            this.decks = number_of_decks;
+            this.#decks = number_of_decks;
         }
 
-        this.Reset();
+        this.Shuffle();
     }
 
     CardsLeft() {
-        return this.shoe.length;
+        return this.#shoe.length;
     }
 
     GetCard() {
-        const theCard = new Card(this.shoe.pop());
-        return theCard;
+        return new Card(this.#shoe.pop());
     }
 
     Reset() {
-        this.shoe = new Array();
-        Setup(this);
+        this.Shuffle();
     }
 
     Show() {
-        DisplayShoe(this.shoe);
+        DisplayShoe(this.#shoe, this.#decks);
+    }
+
+    Shuffle() {
+        this.#shoe = new Array();
+        Setup(this.#shoe, this.#decks);
     }
 }
 
-function Setup(shoeObject) {
+function Setup(shoe, decks) {
 
     // If the shoe isn't empty yet reset it
-    shoeObject.shoe.length = 0;
+    shoe.length = 0;
 
-    for( var i=0; i < (shoeObject.decks * 52); i++) {
-        shoeObject.shoe.push(i);
+    for( var i=0; i < (decks * 52); i++) {
+        shoe.push(i);
     }
 
     // Initialize seed randomly
     RNG.seed(Date.now());
 
-    for( var i=shoeObject.shoe.length-1; i>=0; i--)
+    for( var i=shoe.length-1; i>=0; i--)
     {
         // Random for remaining positions.
         const r = (RNG.range(i));
 
-        const temp = shoeObject.shoe[i];
-        shoeObject.shoe[i]= shoeObject.shoe[r];
-        shoeObject.shoe[r] = temp;
+        const temp = shoe[i];
+        shoe[i]= shoe[r];
+        shoe[r] = temp;
     }
 
     return;
