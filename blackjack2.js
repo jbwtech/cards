@@ -89,13 +89,17 @@ function AutoPlayRound(round, players, dealer) {
                 }
             }
             if( hand.doubled ) {
-                hand.status = "Doubled";
                 if( players[hand.playerID].stack >= hand.wager ) {
                     players[hand.playerID].stack -= hand.wager;
                     hand.wager *= 2;
+                    hand.GetCard(shoe);
+                    return;
                 }
+            }
+
+            if(hand.score < 9) {
                 hand.GetCard(shoe);
-                return;
+                break outside_while;
             }
     
             if( hand.score < 17 ) {
@@ -110,10 +114,6 @@ function AutoPlayRound(round, players, dealer) {
                     default:
                         hand.GetCard(shoe);
                 }
-            }
-
-            if(hand.score < 9) {
-                hand.GetCard(shoe);
             }
         }
 //        console.log(hand);
@@ -135,27 +135,32 @@ function ScoreRound(round, dealer) {
         case "Busted":
             round.forEach((hand) => {
                 if( hand.status == "BlackJack!" ) {
-                    players[hand.playerID].stack += (hand.wager * 2.5);
+                    players[hand.playerID].GivePayout(hand.wager * 2.5);
+//                    players[hand.playerID].stack += (hand.wager * 2.5);
                 }
                 if( (hand.status == "Stand") || (hand.status == "Doubled")) {
                     hand.status = "Win";
-                    players[hand.playerID].stack += (hand.wager * 2);
+                    players[hand.playerID].GivePayout(hand.wager * 2);
+//                    players[hand.playerID].stack += (hand.wager * 2);
                 }
             })
             break;
         case "Stand":
             round.forEach((hand) => {
                 if( hand.status == "BlackJack!" ) {
-                    players[hand.playerID].stack += (hand.wager * 2.5);
+                    players[hand.playerID].GivePayout(hand.wager * 2.5);
+//                    players[hand.playerID].stack += (hand.wager * 2.5);
                 }
                 if( (hand.status == "Stand") || (hand.status == "Doubled")) {
                     if( hand.score == dealer.hand.score ) {
                         hand.status = "Push";
-                        players[hand.playerID].stack += hand.wager;
+                        players[hand.playerID].GivePayout(hand.wager);
+//                        players[hand.playerID].stack += hand.wager;
                     }
                     if( hand.score > dealer.hand.score ) {
                         hand.status = "Win";
-                        players[hand.playerID].stack += (hand.wager * 2);
+                        players[hand.playerID].GivePayout(hand.wager * 2);
+//                        players[hand.playerID].stack += (hand.wager * 2);
                     }
                     if( hand.score < dealer.hand.score ) {
                         hand.status = "Lose";
@@ -167,7 +172,8 @@ function ScoreRound(round, dealer) {
             round.forEach((hand) => {
                 if( hand.status == "BlackJack!") {
                     hand.status = "Push";
-                    players[hand.playerID].stack += hand.wager;
+                    players[hand.playerID].GivePayout(hand.wager);
+//                    players[hand.playerID].stack += hand.wager;
                 } else {
                     hand.status = "Lose";
                 }
@@ -181,12 +187,18 @@ const players = new Array();
 var shoe = new Shoe(8);
 var numberOfRounds = 0;
 
-players.push(new Player("Sam", 2000));
-players.push(new Player("Wanda", 2000));
-players.push(new Player("Brent", 2000));
-players.push(new Player("Maritza", 2000));
+const minimumBet = 5;
+const startingBank = 500;
 
-for(i=0; i<100; i++) {
+players.push(new Player("Player 0", startingBank));
+players.push(new Player("Player 1", startingBank));
+players.push(new Player("player 2", startingBank));
+players.push(new Player("Player 3", startingBank));
+players.push(new Player("Player 4", startingBank));
+players.push(new Player("Player 5", startingBank));
+players.push(new Player("Player 6", startingBank));
+
+while( true ) {
 
     const round = new Array();
 
@@ -194,7 +206,7 @@ for(i=0; i<100; i++) {
     console.log("");
 
     players.forEach((player) => {
-        var hand = player.CreateHand(20);
+        var hand = player.CreateHand(5);
     
         if( hand !== null) {
             round.push(hand);
@@ -203,23 +215,39 @@ for(i=0; i<100; i++) {
         
     const dealer = new Dealer();
 
-    InitialDeal(2, round, dealer);
-    AutoPlayRound(round, players, dealer);
-    PlayDealer(dealer);
-    ScoreRound(round, dealer);
-    
-    console.log(round);
-    console.log("");
-    round.length = 0;
-
-    console.log(shoe.CardsLeft());
-    numberOfRounds++;
-    console.log(numberOfRounds);
-
-    if(shoe.CardsLeft() < ((players.length * 7 ) + 7) ) {
-        console.log(players);
-        return;        
+    try {
+        InitialDeal(2, round, dealer);
+        AutoPlayRound(round, players, dealer);
+        PlayDealer(dealer);
+        ScoreRound(round, dealer);
+        console.log(round);
+        console.log("");
+        round.length = 0;    
+        numberOfRounds++;
+        if(shoe.CardsLeft() < ((players.length * 7 ) + 7) ) {
+            console.log(`Cards Before Reset: ${shoe.CardsLeft()}`);
+            console.log(`Number of rounds: ${numberOfRounds}\n`);
+            shoe.Reset();
+            console.log("Resuming play ...");
+        }
+    } catch (error) {
+        console.error(error);
+    } finally {
+        var busted = false;
+        players.forEach((player) => {
+            if( player.stack < minimumBet ) {
+                busted = true;
+            }
+        });
+        if( busted == true ) {
+            break;
+        }
     }
 }
+
+console.log(`Round: ${numberOfRounds}`);
+players.forEach((player) => {
+    console.log(player);
+});
 
 
