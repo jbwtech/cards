@@ -14,23 +14,7 @@ table1.AddPlayer("Player 4", chips);
 table1.AddPlayer("Player 5", chips);
 table1.AddPlayer("Player 6", chips);
 
-console.log(table1);
-
 table1.ShowPlayers();
-
-const table2 = new Table();
-
-table2.AddPlayer("Player A", chips);
-table2.AddPlayer("Player B", chips);
-table2.AddPlayer("player C", chips);
-table2.AddPlayer("Player D", chips);
-table2.AddPlayer("Player E", chips);
-table2.AddPlayer("Player F", chips);
-table2.AddPlayer("Player G", chips);
-
-console.log(table2);
-
-table2.ShowPlayers();
 
 return;
 
