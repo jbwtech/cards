@@ -4,16 +4,22 @@ const { Dealer, Player } = require('./player.js');
 
 const minimumBet = 5;
 
+
 class Table {
+
+    static #currentID = Date.now() - 1;
+
     #id;
-    #shoe;
-    #dealer;
-    #seats;
+    #shoe = new Shoe(8);
+    #dealer = new Dealer();
+    #seats = new Array();
 
     constructor() {
-        this.#shoe = new Shoe(8);
-        this.#dealer = new Dealer();
-        this.#seats = new Array();
+        this.#id = Table.#currentID++;
+    }
+
+    ID() {
+        return this.#id;
     }
 
     AddPlayer(player,chips) {
