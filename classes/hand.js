@@ -16,6 +16,10 @@ class Hand {
         AddCard(this, shoe.GetCard());
     }
 
+    ReceiveCard(card) {
+        AddCard(this, card);
+    }
+
     IsBlackJack() {
         if( (this.score == 21) && (this.cards.length = 2) ) {
             return true;
