@@ -6,6 +6,8 @@ const chips = 500;
 
 const table1 = new Table();
 
+console.log(`Table: ${table1.ID()}`);
+
 table1.AddPlayer("Player 0", chips);
 table1.AddPlayer("Player 1", chips);
 table1.AddPlayer("player 2", chips);
@@ -15,6 +17,10 @@ table1.AddPlayer("Player 5", chips);
 table1.AddPlayer("Player 6", chips);
 
 table1.ShowPlayers();
+
+const table2 = new Table();
+
+console.log(`Table: ${table2.ID()}`);
 
 return;
 
