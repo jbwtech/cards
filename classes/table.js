@@ -1,6 +1,7 @@
 
 const { Shoe } = require('./shoe.js');
 const { Dealer, Player } = require('./player.js');
+const { DealerHand, PlayerHand } = require('./hand.js');
 
 const minimumBet = 5;
 
@@ -13,6 +14,7 @@ class Table {
     #shoe = new Shoe(8);
     #dealer = new Dealer();
     #seats = new Array();
+    #minimumBet = 5;
 
     constructor() {
         this.#id = Table.#currentID++;
@@ -22,8 +24,12 @@ class Table {
         return this.#id;
     }
 
-    AddPlayer(player,chips) {
-        this.#seats.push(new Player(player, chips));
+    TakeSeat(player) {
+        this.#seats.push(player);
+    }
+
+    AddPlayer(name, chips) {
+        this.#seats.push(new Player(name, chips));
     }
 
     ShowPlayers() {
@@ -31,6 +37,48 @@ class Table {
             console.log(player);
         });
     }
+
+    SetMinimum(amount) {
+        this.#minimumBet = amount;
+    }
+
+    GetMinimum() {
+        return this.#minimumBet;
+    }
+
+    GetWagers() {
+
+        this.round = new Array();
+
+        for( const player of this.#seats ) {
+            if( player.name == "Player 3") {
+                continue;
+            }
+
+            const tempHand = new PlayerHand();
+            tempHand.wager = this.#minimumBet;
+
+            this.round.push(tempHand);
+        }
+        this.Deal(2);
+    }
+
+    Deal( numberOfCards ) {
+        this.#dealer.hand = new DealerHand();
+
+        for( var i=0; i < numberOfCards; i++ ) {
+            // Deal Crads to players
+            this.round.forEach((hand) => { 
+                hand.ReceiveCard(this.#shoe.GetCard());
+            })
+    
+            this.#dealer.hand.ReceiveCard(this.#shoe.GetCard());
+        }
+
+        console.log(this.round);
+        console.log(this.#dealer);
+    }
+
 }
 
 module.exports = { Table };
