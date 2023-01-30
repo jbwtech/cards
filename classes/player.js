@@ -19,7 +19,7 @@ class Player {
         this.id = Player.id++;
         this.name = name;
         this.stack = amount;
-        this.max_stack = 0;
+        this.max_stack = this.stack;
     }
 
     static id = 0
