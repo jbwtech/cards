@@ -9,7 +9,7 @@ const table1 = new Table();
 
 console.log(`Table: ${table1.ID()}`);
 
-for( var i =0; i<7; i++) {
+for( var i =0; i<2; i++) {
 
     var name = `Player ${i}`;
     var currentPlayer = new Player(name,chips)
@@ -18,10 +18,12 @@ for( var i =0; i<7; i++) {
     (i == 3) ? table1.TakeSeat(currentPlayer, chips) : console.log("");
 }
 
+
 table1.GetWagers();
 table1.ShowPlayers();
 table1.DealStartingHands(2);
-
+table1.PlayHands();
+table1.PlayDealer();
 
 return;
 
