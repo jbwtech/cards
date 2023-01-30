@@ -8,6 +8,7 @@ class Shoe {
     #shoe = null;
 
     #runningCount = 0;
+    #decksRemaining = this.#decks;
     #trueCount = 0;
 
     constructor( number_of_decks ) {
@@ -31,10 +32,11 @@ class Shoe {
 
         if(card.value > 9) {
             this.#runningCount--;
-            this.#trueCount = Math.trunc( this.#runningCount / Math.trunc(this.#shoe.length / 52 + 1));
+            this.#decksRemaining = Math.trunc(this.#shoe.length / 52) + 1;
+            this.#trueCount = Math.trunc( this.#runningCount / this.#decksRemaining);
         }
 
-        console.log(`Running:  ${this.#runningCount}   True: ${this.#trueCount}`);
+        console.log(`Running:  ${this.#runningCount}   Decks: ${this.#decksRemaining}   True: ${this.#trueCount}`);
     }
 
     CardsLeft() {
