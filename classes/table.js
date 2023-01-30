@@ -51,19 +51,16 @@ class Table {
         this.round = new Array();
 
         for( const player of this.#seats ) {
-            if( player.name == "Player 3") {
-                continue;
+            const tempHand = new PlayerHand(player.id);
+            if(player.stack >= this.#minimumBet) {
+                player.stack -= this.#minimumBet;
+                tempHand.wager = this.#minimumBet;
+                this.round.push(tempHand);    
             }
-
-            const tempHand = new PlayerHand();
-            tempHand.wager = this.#minimumBet;
-
-            this.round.push(tempHand);
         }
-        this.Deal(2);
     }
 
-    Deal( numberOfCards ) {
+    DealStartingHands( numberOfCards ) {
         this.#dealer.hand = new DealerHand();
 
         for( var i=0; i < numberOfCards; i++ ) {
