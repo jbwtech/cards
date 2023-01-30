@@ -7,6 +7,9 @@ class Shoe {
     #decks = 2;
     #shoe = null;
 
+    #runningCount = 0;
+    #trueCount = 0;
+
     constructor( number_of_decks ) {
     
         if( number_of_decks !== undefined ) {
@@ -16,12 +19,32 @@ class Shoe {
         this.Shuffle();
     }
 
+    #UpdateCount(card) {
+        if( (card.value > 1) && (card.value < 7) ) {
+            this.#runningCount++;
+            this.#trueCount = Math.trunc( this.#runningCount / (Math.trunc(this.#shoe.length / 52) + 1));
+        }
+
+        if( (card.value > 6) && (card.value < 10) ) {
+            this.#trueCount = Math.trunc( this.#runningCount / (Math.trunc(this.#shoe.length / 52) + 1));
+        }
+
+        if(card.value > 9) {
+            this.#runningCount--;
+            this.#trueCount = Math.trunc( this.#runningCount / Math.trunc(this.#shoe.length / 52 + 1));
+        }
+
+//        console.log(`Running:  ${this.#runningCount}   True: ${this.#trueCount}`);
+    }
+
     CardsLeft() {
         return this.#shoe.length;
     }
 
     GetCard() {
-        return new Card(this.#shoe.pop());
+        const tempCard = new Card(this.#shoe.pop());
+        this.#UpdateCount(tempCard);
+        return tempCard;
     }
 
     Reset() {
