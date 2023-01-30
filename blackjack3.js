@@ -1,4 +1,5 @@
 const readline = require('readline-sync');
+const { Player } = require('./classes/player.js');
 
 const { Table } = require('./classes/table.js');
 
@@ -8,19 +9,19 @@ const table1 = new Table();
 
 console.log(`Table: ${table1.ID()}`);
 
-table1.AddPlayer("Player 0", chips);
-table1.AddPlayer("Player 1", chips);
-table1.AddPlayer("player 2", chips);
-table1.AddPlayer("Player 3", chips);
-table1.AddPlayer("Player 4", chips);
-table1.AddPlayer("Player 5", chips);
-table1.AddPlayer("Player 6", chips);
+for( var i =0; i<7; i++) {
 
+    var name = `Player ${i}`;
+    var currentPlayer = new Player(name,chips)
+
+    table1.TakeSeat(currentPlayer, chips);
+    (i == 3) ? table1.TakeSeat(currentPlayer, chips) : console.log("");
+}
+
+table1.GetWagers();
 table1.ShowPlayers();
+table1.DealStartingHands(2);
 
-const table2 = new Table();
-
-console.log(`Table: ${table2.ID()}`);
 
 return;
 
