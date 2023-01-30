@@ -12,17 +12,6 @@ class Round {
 
     InitialDeal( numberOfCards, shoe ) {
 
-        for( var i=0; i < numberOfCards; i++ ) {
-            // Deal Crads to players
-            this.round.forEach((hand) => { 
-                hand.GetCard(shoe);
-            })
-    
-            if( this.dealer !== null ) {
-                // Deal Cards to delaer
-                this.dealer.hand.GetCard(shoe);
-            }        
-        }
     }
     
     AutoPlayRound(players, shoe) {
