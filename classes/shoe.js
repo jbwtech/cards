@@ -34,7 +34,7 @@ class Shoe {
             this.#trueCount = Math.trunc( this.#runningCount / Math.trunc(this.#shoe.length / 52 + 1));
         }
 
-//        console.log(`Running:  ${this.#runningCount}   True: ${this.#trueCount}`);
+        console.log(`Running:  ${this.#runningCount}   True: ${this.#trueCount}`);
     }
 
     CardsLeft() {
