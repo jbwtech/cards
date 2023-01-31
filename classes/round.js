@@ -1,14 +1,12 @@
 const { DealerHand, PlayerHand } = require('./hand.js');
 
-const simulation = true;
-
 class Round {
     constructor(shoe, dealer, hands) {
         this.shoe = shoe;
         this.dealer = dealer;
         this.hands = hands;
         this.upcard = 0;
-
+        
         if(this.hands.length) {
             this.DealStartingHands(2);
         }
@@ -28,53 +26,12 @@ class Round {
     
             this.dealer.hand.ReceiveCard(this.shoe.GetCard());
         }
-
-        console.log(this.hands);
-        console.log(this.dealer.hand);
-
         this.upcard = this.dealer.hand.UpCard().value;
-
-        console.log(this.upcard);
-
-        this.PlayHands();
-        if(this.dealer.hand.IsBlackJack() !== true ) {
-            this.PlayDealer();
-        } else {
-            console.log(this.dealer.hand);
-        }
     }
 
-    PlayHands() {
-        console.log(`Dealer is showing: ${this.dealer.hand.UpCard().text}\n`);
+    AutoPlay(hand, player) {
 
-        if( this.dealer.hand.UpCard().value == 11) {
-            console.log("Insurance?");
-        }
-
-        if( this.dealer.hand.IsBlackJack() ) {
-            this.dealer.hand.status = "BlackJack!"
-            console.log("Dealer has BlackJack!");
-            this.hands.forEach((hand) => {
-                hand.status = (hand.IsBlackJack()) ? "Push" : "Lose";
-                console.log(hand);
-            });
-            return;
-        }
-
-        if( simulation == true ) {
-            this.hands.forEach((hand) => {
-                console.log("AutoPlay ...");
-                this.#AutoPlay(hand);
-                console.log(hand);
-            });
-        } else {
-            this.hands.forEach((hand) => {
-                this.Play(hand);
-            })
-        }
-    }
-
-    #AutoPlay(hand) {
+        console.log("AutoPlay ...");
 
         var counter = 0;
 
