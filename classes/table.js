@@ -5,7 +5,7 @@ const { DealerHand, PlayerHand } = require('./hand.js');
 
 const minimumBet = 5;
 
-
+const simulation = true;
 
 class Table {
 
@@ -83,115 +83,98 @@ class Table {
         if( this.#dealer.hand.UpCard().value == 11) {
             console.log("Insurance?");
         }
-        
+
         if( this.#dealer.hand.IsBlackJack() ) {
             this.#dealer.hand.status = "BlackJack!"
             console.log("Dealer has BlackJack!");
             return;
         }
-        
-        this.round.forEach((hand) => {
-    
-            outside_while:
-            while(hand.status == "Open") {
-                if(hand.score >= 17) {
-                    hand.status = "Stand";
-                    break;
-                }
-        
-                const upcard = this.#dealer.hand.UpCard().value;
-        
-                if( hand.cards.length == 2 ) {
-                    switch(hand.score) {
-                        case 9:
-                            if( ((upcard > 2) && (upcard < 7)) || (upcard == 8)) {
-                                hand.doubled = true;
-                            }
-                            break;
-                        case 10:
-                            if( upcard < 10) {
-                                hand.doubled = true;
-                            }
-                            break;
-                        case 11:
-                            hand.doubled = true;
-                            break;
-                        case 12:
-                            if((upcard == 2) || (upcard == 3)) {
-                                hand.doubled = true;
-                            }
-                            break;
-                    }
-    
-                    if( hand.cards[0].value == hand.cards[1].value ) {
-                        switch(hand.score) {
-                            case 2:
-                            case 16:
-                                console.log("Split");
-                                break outside_while;
-                            case 4:
-                            case 6:
-                            case 8:
-                            case 10:
-                                // Should Already 
-                            case 12:
-                            case 14:
-                            case 16:
-                            case 18:
-                            case 20:
-                        }
-                    }
-                }
 
-                if( hand.doubled ) {
+        if( simulation == true ) {
+            this.round.forEach((hand) => {
+                this.#AutoPlay(hand);
+            });
+        } else {
+            this.round.forEach((hand) => {
+                this.PlayHands(hand);
+            })
+        }
+        console.log(this.round);
+    }
+
+    #AutoPlay(hand) {
+
+        console.log("AutoPlay ...");
+
+        outside_while:
+        while(hand.status == "Open") {
+
+            const upcard = this.#dealer.hand.UpCard().value;
+
+            if(hand.canSplit == true) {
+                console.log(`Split: ${hand.ShouldSplit(upcard)}`);
+            }
+
+            if(hand.canDouble == true) {
+                console.log(`Double: ${hand.ShouldDouble(upcard)}`);
+            }
+
+            console.log("Hand less than 9 check ...");
+            if(hand.score < 9) {
+                hand.GetCard(this.#shoe);
+                break outside_while;
+            }
+
+            if(hand.score >= 17) {
+                hand.status = "Stand";
+                break outside_while;
+            }
+
+            console.log("Double process check ...");
+            if( hand.canDouble && hand.ShouldDouble(upcard) ) {
 /*                    if( players[hand.playerID].stack >= hand.wager ) {
-                        players[hand.playerID].stack -= hand.wager;
-                        hand.wager *= 2;
-                        hand.GetCard(shoe);
-                        return;
-                    }
+                    players[hand.playerID].stack -= hand.wager;
+                    hand.wager *= 2;
+                    hand.GetCard(shoe);
+                    return;
+                }
 */
-                    const currentPlayer = this.#seats.find((player) => {
-                        return hand.playerID == player.id;
-                    });
+                const currentPlayer = "";
+/*                const currentPlayer = this.#seats.find((player) => {
+                    return hand.playerID == player.id;
+                });
 
-                    if( currentPlayer !== undefined ) {
-                        console.log(`Player: ${currentPlayer}`);
-                        hand.wager *= 2;
-                        hand.status = "Stand";
+*/
+                console.log(`Player: ${currentPlayer}`);
+                hand.wager *= 2;
+                hand.status = "Stand";
+                hand.GetCard(this.#shoe);
+                break outside_while;
+            }
+
+            console.log("Hand between 12-17 check ...");
+            if( (hand.score > 10) && (hand.score < 17) ) {
+                switch(upcard) {
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                        hand.status = "Stand"
+                        break outside_while;
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                        console.log("Dealer UpCard 7-11 ...");
                         hand.GetCard(this.#shoe);
-                        break;
-                    }
-    
-                }
-    
-                if(hand.score < 9) {
-                    hand.GetCard(this.#shoe);
-                }
-        
-                if( (hand.score >= 12) && (hand.score < 17) ) {
-                    switch(upcard) {
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 6:
-                            hand.status = "Stand"
-                            break;
-                        case 7:
-                        case 8:
-                        case 9:
-                        case 10:
-                        case 11:
-                            hand.GetCard(this.#shoe);
-                            break;
-                    }
+                        console.log(hand.status);
+                        break outside_while;
                 }
             }
-//        console.log(hand);
-        });    
-        
-        console.log(this.round);
+        }
+        console.log(hand);
     }
 
     PlayDealer() {
@@ -199,13 +182,14 @@ class Table {
             this.#dealer.hand.GetCard(this.#shoe)
         }
         
-        this.#dealer.hand.status = (this.#dealer.hand.score <= 21) ? "Stand" : "Busted"
+        this.#dealer.hand.status = (this.#dealer.hand.score > 21) ? "Busted" : this.#dealer.hand.status;
         
         console.log(this.#dealer.hand);
         this.#ScoreRound();
     }
 
     #ScoreRound() {
+        console.log("Scoring round ...");
         switch( this.#dealer.hand.status ) {
             case "Busted":
                 this.round.forEach((hand) => {
@@ -247,7 +231,7 @@ class Table {
                 this.round.forEach((hand) => {
                     if( hand.status == "BlackJack!") {
                         hand.status = "Push";
-                        players[hand.playerID].GivePayout(hand.wager);
+    //                    players[hand.playerID].GivePayout(hand.wager);
     //                    players[hand.playerID].stack += hand.wager;
                     } else {
                         hand.status = "Lose";
