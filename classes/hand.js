@@ -48,6 +48,60 @@ class PlayerHand extends Hand {
         this.wager = 0;
         this.insurance = false;
         this.doubled = false;
+        this.canSplit = false;
+        this.canDouble = false;
+    }
+
+    ShouldSplit(upcard) {
+        if( this.canSplit == true ) {
+            switch(this.score) {
+                case 2:
+                case 16:
+                    return true;
+                    break;
+                case 10:
+                case 20:
+                    return false;
+                    break;
+                case 4:
+                case 6:
+                case 8:
+                case 12:
+                case 14:
+                case 16:
+                case 18:
+                    if(upcard < 7) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                    break;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    ShouldDouble(upcard) {
+        if( this.canDouble == true ) {
+            switch(this.score) {
+                case 9:
+                    if( ((upcard > 2) && (upcard < 7)) || (upcard == 8)) {
+                        return true;
+                    }
+                    return false;
+                    break;
+                case 10:
+                    if( upcard < 10) {
+                        return true;
+                    }
+                    return false;
+                    break;
+                case 11:
+                    return true;
+                    break;
+            }
+        }
     }
 }
 
@@ -60,6 +114,19 @@ function AddCard(hand, cardObject) {
     hand.cards.push(cardObject);
     hand.score = 0;
     hand.text = "";
+
+    if(hand.playerID !== -1) {
+        if( (hand.cards.length == 2) && (hand.cards[0].value == hand.cards[1].value) ) {
+            hand.canSplit = true;
+        } else {
+            hand.canSplit = false;
+        }
+        if( hand.cards.length == 2 ) {
+            hand.canDouble = true;
+        } else {
+            hand.canDouble = false;
+        }
+    }
 
     hand.cards.forEach((card) => {
         hand.score += card.value;
