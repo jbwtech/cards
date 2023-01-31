@@ -100,6 +100,8 @@ class PlayerHand extends Hand {
                 case 11:
                     return true;
                     break;
+                default:
+                    return false;
             }
         }
     }
