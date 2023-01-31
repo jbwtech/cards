@@ -62,7 +62,33 @@ class Table {
         }
 
         this.#dealer.hand = new DealerHand();
-        this.round = new Round(this.#shoe, this.#dealer, currentHands);
+        this.round = new Round(this.#shoe, this.#dealer, currentHands, true);
+
+
+        // Check for Dealer Blackjack
+        if( this.#dealer.hand.UpCard().value == 11) {
+            console.log("Insurance?");
+        }
+
+        if( this.#dealer.hand.IsBlackJack() ) {
+            this.#dealer.hand.status = "BlackJack!"
+            console.log("Dealer has BlackJack!");
+            console.log(this.#dealer.hand);
+            currentHands.forEach((hand) => {
+                hand.status = (hand.IsBlackJack()) ? "Push" : "Lose";
+                console.log(hand);
+            });
+            return;
+        }
+
+        currentHands.forEach((hand) => {
+            console.log(`Dealer is showing: ${this.#dealer.hand.UpCard().text}\n`);
+            const player = this.#seats[hand.playerID];
+
+            this.PlayHand(hand,player);
+        });
+
+        this.round.PlayDealer();
 
         currentHands.forEach((hand) => {
             const player = this.#seats[hand.playerID];
@@ -73,6 +99,19 @@ class Table {
             }
             console.log(hand);
         });
+    }
+
+    PlayHand(hand, player) {
+
+        const simulation = true;
+        
+        console.log(hand);
+
+        if( simulation == true ) {
+            this.round.AutoPlay(hand, player);
+        } else {
+            this.Play(hand);
+        }
     }
 
     #ScoreRound(hand, player) {
