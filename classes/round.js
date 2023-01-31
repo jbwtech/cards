@@ -118,8 +118,6 @@ class Round {
         }
         
         this.dealer.hand.status = (this.dealer.hand.score > 21) ? "Busted" : "Stand";
-        
-        console.log(this.dealer.hand);
     }
 
 }
