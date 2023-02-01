@@ -83,26 +83,48 @@ class PlayerHand extends Hand {
     }
 
     ShouldDouble(upcard) {
-        if( this.canDouble == true ) {
+        if( this.canDouble !== true ) {
+            return false;
+        }
+
+        if(this.aces == 1 ) {
             switch(this.score) {
-                case 9:
-                    if( ((upcard > 2) && (upcard < 7)) || (upcard == 8)) {
-                        return true;
-                    }
-                    return false;
-                    break;
-                case 10:
-                    if( upcard < 10) {
-                        return true;
-                    }
-                    return false;
-                    break;
-                case 11:
-                    return true;
-                    break;
+                case 19:
+                    return (upcard == 6) ? true : false;
+                case 18:
+                    return ((upcard >= 2) && (upcard <= 6)) ? true : false;
+                case 17:
+                    return ((upcard >= 3) && (upcard <= 6)) ? true : false;
+                case 16:
+                case 15:
+                    return ((upcard >= 4) && (upcard <= 6)) ? true : false;
+                case 14:
+                    return ((upcard >= 5) && (upcard <= 6)) ? true : false;
+                case 13:
+                    return ((upcard >= 5) && (upcard <= 6)) ? true : false;
                 default:
                     return false;
             }
+        }
+
+        switch(this.score) {
+            case 9:
+                if( ((upcard > 2) && (upcard < 7)) || (upcard == 8)) {
+                    return true;
+                }
+                return false;
+                break;
+            case 10:
+                if( upcard < 10) {
+                    return true;
+                }
+                return false;
+                break;
+            case 11:
+                return true;
+                break;
+            default:
+                return false;
         }
     }
 }
