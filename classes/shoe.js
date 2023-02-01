@@ -20,6 +20,10 @@ class Shoe {
         this.Shuffle();
     }
 
+    TrueCount() {
+        return this.#trueCount;
+    }
+
     #UpdateCount(card) {
         if( (card.value > 1) && (card.value < 7) ) {
             this.#runningCount++;
@@ -36,7 +40,7 @@ class Shoe {
             this.#trueCount = Math.trunc( this.#runningCount / this.#decksRemaining);
         }
 
-        console.log(`Running:  ${this.#runningCount}   Decks: ${this.#decksRemaining}   True: ${this.#trueCount}`);
+//        console.log(`Running:  ${this.#runningCount}   Decks: ${this.#decksRemaining}   True: ${this.#trueCount}`);
     }
 
     CardsLeft() {
@@ -59,6 +63,9 @@ class Shoe {
 
     Shuffle() {
         this.#shoe = new Array();
+        this.#runningCount = 0;
+        this.#trueCount = 0;
+        this.#decksRemaining = this.decks;
         Setup(this.#shoe, this.#decks);
     }
 }
