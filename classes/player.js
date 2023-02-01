@@ -20,6 +20,7 @@ class Player {
         this.name = name;
         this.stack = amount;
         this.max_stack = this.stack;
+//        this.bank = 0;
     }
 
     static id = 0
@@ -47,6 +48,12 @@ class Player {
         if( this.stack > this.max_stack ) {
             this.max_stack = this.stack;
         }
+/*
+        if( this.stack >= 525 ) {
+            this.stack -= 25;
+            this.bank += 25;
+        }
+*/
     }
 }
 
