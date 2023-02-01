@@ -27,18 +27,13 @@ class Shoe {
     #UpdateCount(card) {
         if( (card.value > 1) && (card.value < 7) ) {
             this.#runningCount++;
-            this.#trueCount = Math.trunc( this.#runningCount / (Math.trunc(this.#shoe.length / 52) + 1));
-        }
-
-        if( (card.value > 6) && (card.value < 10) ) {
-            this.#trueCount = Math.trunc( this.#runningCount / (Math.trunc(this.#shoe.length / 52) + 1));
         }
 
         if(card.value > 9) {
             this.#runningCount--;
-            this.#decksRemaining = Math.trunc(this.#shoe.length / 52) + 1;
-            this.#trueCount = Math.trunc( this.#runningCount / this.#decksRemaining);
         }
+        this.#decksRemaining = Math.trunc(this.#shoe.length / 52 * 100) / 100;
+        this.#trueCount = Math.trunc( this.#runningCount / this.#decksRemaining);
 
 //        console.log(`Running:  ${this.#runningCount}   Decks: ${this.#decksRemaining}   True: ${this.#trueCount}`);
     }
