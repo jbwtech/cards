@@ -31,7 +31,7 @@ class Round {
 
     AutoPlay(hand, player) {
 
-        console.log("AutoPlay ...");
+//        console.log("AutoPlay ...");
 
         var counter = 0;
 
@@ -40,49 +40,38 @@ class Round {
 
             counter++;
             if(counter > 6) {
-                console.log(hand);
+//                console.log(hand);
                 throw error;
             }
 
             if(hand.canSplit == true) {
-                console.log(`Should Split: ${hand.ShouldSplit(this.upcard)}`);
+//                console.log(`Should Split: ${hand.ShouldSplit(this.upcard)}`);
             }
 
             if(hand.canDouble == true) {
-                console.log(`Should Double: ${hand.ShouldDouble(this.upcard)}`);
+//                console.log(`Should Double: ${hand.ShouldDouble(this.upcard)}`);
             }
 
-            console.log("Hand less than 9 check ...");
+//            console.log("Hand less than 9 check ...");
             if(hand.score < 9) {
-                console.log("Hit ...");
+//                console.log("Hit ...");
                 hand.GetCard(this.shoe);
             }
 
-            console.log("Double process check ...");
+//            console.log("Double process check ...");
             if( hand.canDouble && hand.ShouldDouble(this.upcard) ) {
-/*                    if( players[hand.playerID].stack >= hand.wager ) {
-                    players[hand.playerID].stack -= hand.wager;
+                if( player.stack >= hand.wager ) {
+                    player.stack -= hand.wager;
                     hand.wager *= 2;
-                    hand.GetCard(shoe);
-                    return;
+                    hand.status = "Doubled";
+                    hand.doubled = true;
+//                    console.log("Hit ...");
+                    hand.GetCard(this.shoe);
+                    break outside_while;
                 }
-*/
-                const currentPlayer = "";
-/*                const currentPlayer = this.#seats.find((player) => {
-                    return hand.playerID == player.id;
-                });
-
-*/
-                console.log(`Player: ${currentPlayer}`);
-                hand.wager *= 2;
-                hand.status = "Doubled";
-                hand.doubled == true;
-                console.log("Hit ...");
-                hand.GetCard(this.shoe);
-                break outside_while;
             }
 
-            console.log("Hand less than 17 check ...");
+//            console.log("Hand less than 17 check ...");
             if( hand.score < 17 ) {
                 switch(this.upcard) {
                     case 2:
@@ -97,8 +86,8 @@ class Round {
                     case 9:
                     case 10:
                     case 11:
-                        console.log("Dealer UpCard 7-11 ...");
-                        console.log("Hit ...");
+//                        console.log("Dealer UpCard 7-11 ...");
+//                        console.log("Hit ...");
                         hand.GetCard(this.shoe);
                         break;
                 }
