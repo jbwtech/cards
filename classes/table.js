@@ -14,7 +14,7 @@ class Table {
     #shoe = new Shoe(8);
     #dealer = new Dealer();
     #seats = new Array();
-    #minimumBet = 5;
+    #minimumBet = 10;
 
     constructor() {
         this.#id = Table.#currentID++;
@@ -56,7 +56,7 @@ class Table {
             var currentBet = this.#minimumBet;
 
             if(this.#shoe.TrueCount > 2) {
-                currentBet *= (this.#shoe.TrueCount() - 1);
+                currentBet *= (this.#shoe.TrueCount() * 2);
             }
 
             if(this.#shoe.TrueCount() < 0) {
