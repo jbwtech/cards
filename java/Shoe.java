@@ -68,7 +68,7 @@ public class Shoe
         this.decksRemaining = (this.shoe.size() / 52 * 100) / 100;
         this.trueCount = (int)(Math.floor(this.runningCount / this.decksRemaining));
 
-        System.out.printf("Running: %d   Decks: %d   True: %d", this.runningCount, this.decks, this.trueCount);
+        System.out.printf("Running: %d   Decks: %d   True: %d\n", this.runningCount, this.decks, this.trueCount);
     }
 
     public int CardsLeft() {
@@ -95,7 +95,7 @@ public class Shoe
 
             Card theCard = new Card(shoe.get(i) % 52);
 
-            System.out.printf("shoe[%d]:  %s  %d", i, theCard.Text(), theCard.Value());
+            System.out.printf("shoe[%d]:  %s  %d\n", i, theCard.Text(), theCard.Value());
 
             // console.log(`shoe[${i}]:  ${theCard.text}  ${theCard.number}`);
         }

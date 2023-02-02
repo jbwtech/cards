@@ -1,6 +1,4 @@
 
-import java.lang.Math;
-
 public class Card
 {
     static String[] rank = new String[]{"A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"};
