@@ -21,7 +21,7 @@ class Hand {
     }
 
     IsBlackJack() {
-        if( (this.score == 21) && (this.cards.length = 2) ) {
+        if( (this.score == 21) && (this.cards.length == 2) ) {
             return true;
         } else {
             return false;
@@ -33,6 +33,40 @@ class DealerHand extends Hand {
     constructor() {
         super();
         this.playerID = -1;
+    }
+
+    AddCard(hand, cardObject) {
+
+        if( cardObject.value == 11) {
+            hand.aces++;
+        }
+    
+        hand.cards.push(cardObject);
+        hand.score = 0;
+        hand.text = "";
+    
+        hand.cards.forEach((card) => {
+            hand.score += card.value;
+            hand.text += card.text;
+        });
+    
+        var numberOfAces = hand.aces;
+        while( (hand.score > 21) && (numberOfAces > 0) ) {
+            hand.score -= 10;
+            numberOfAces--;
+        }
+    
+        if( hand.score > 21 ) {
+            hand.status = "Busted";
+            return;
+        }
+    
+        if( hand.score == 21 ) {
+            if(hand.cards.length == 2) {
+                hand.status = "BlackJack!";
+            }
+            return;
+        }
     }
 
     UpCard() {
@@ -52,6 +86,58 @@ class PlayerHand extends Hand {
         this.canDouble = false;
     }
 
+    AddCard(hand, cardObject) {
+
+        if( cardObject.value == 11) {
+            hand.aces++;
+        }
+    
+        hand.cards.push(cardObject);
+        hand.score = 0;
+        hand.text = "";
+    
+        if(hand.playerID !== -1) {
+            if( (hand.cards.length == 2) && (hand.cards[0].value == hand.cards[1].value) ) {
+                hand.canSplit = true;
+            } else {
+                hand.canSplit = false;
+            }
+            if( hand.cards.length == 2 ) {
+                hand.canDouble = true;
+            } else {
+                hand.canDouble = false;
+            }
+        }
+    
+        hand.cards.forEach((card) => {
+            hand.score += card.value;
+            hand.text += card.text;
+        });
+    
+        var numberOfAces = hand.aces;
+        while( (hand.score > 21) && (numberOfAces > 0) ) {
+            hand.score -= 10;
+            numberOfAces--;
+        }
+    
+        if( hand.score > 21 ) {
+            hand.status = "Busted";
+            return;
+        }
+    
+        if( hand.score == 21 ) {
+            if(hand.cards.length == 2) {
+                hand.status = "BlackJack!";
+            }
+            return;
+        }
+    
+        if( hand.doubled == true ) {
+            hand.status = "Stand";
+            return;
+        }
+    }
+
     ShouldSplit(upcard) {
         if( this.canSplit == true ) {
             switch(this.score) {
@@ -68,7 +154,6 @@ class PlayerHand extends Hand {
                 case 8:
                 case 12:
                 case 14:
-                case 16:
                 case 18:
                     if(upcard < 7) {
                         return true;
@@ -77,9 +162,8 @@ class PlayerHand extends Hand {
                     }
                     break;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     ShouldDouble(upcard) {
@@ -129,59 +213,6 @@ class PlayerHand extends Hand {
     }
 }
 
-function AddCard(hand, cardObject) {
-
-    if( cardObject.value == 11) {
-        hand.aces++;
-    }
-
-    hand.cards.push(cardObject);
-    hand.score = 0;
-    hand.text = "";
-
-    if(hand.playerID !== -1) {
-        if( (hand.cards.length == 2) && (hand.cards[0].value == hand.cards[1].value) ) {
-            hand.canSplit = true;
-        } else {
-            hand.canSplit = false;
-        }
-        if( hand.cards.length == 2 ) {
-            hand.canDouble = true;
-        } else {
-            hand.canDouble = false;
-        }
-    }
-
-    hand.cards.forEach((card) => {
-        hand.score += card.value;
-        hand.text += card.text;
-    });
-
-    var numberOfAces = hand.aces;
-    while( (hand.score > 21) && (numberOfAces > 0) ) {
-        hand.score -= 10;
-        numberOfAces--;
-    }
-
-    if( hand.score > 21 ) {
-        hand.status = "Busted";
-        return;
-    }
-
-    if( hand.score == 21 ) {
-        if(hand.cards.length == 2) {
-            hand.status = "BlackJack!";
-        } else {
-            hand.status = "Stand";
-        }
-        return;
-    }
-
-    if( hand.doubled == true ) {
-        hand.status = "Stand";
-        return;
-    }
-}
 
 module.exports = {
     DealerHand,

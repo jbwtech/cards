@@ -46,6 +46,10 @@ class Table {
         return this.#minimumBet;
     }
 
+    GetPlayer() {
+        return this.#seats[0];
+    }
+
     GetWagers() {
 
         const currentHands = new Array();
@@ -53,14 +57,14 @@ class Table {
         for( const player of this.#seats ) {
 
             const tempHand = new PlayerHand(player.id);
-            var currentBet = this.#minimumBet;
+            var currentBet = this.#minimumBet * 1;
 
             if(this.#shoe.TrueCount > 2) {
-                currentBet *= (this.#shoe.TrueCount() * 2);
+                currentBet *= (this.#shoe.TrueCount() - 1);
             }
 
             if(this.#shoe.TrueCount() < 0) {
-                currentBet *= 1;
+                currentBet *= this.#minimumBet;
             }
 /*
             if(player.stack >= 750 || player.stack <= 100) {
@@ -126,7 +130,6 @@ class Table {
 
         currentHands.forEach((hand) => {
             const player = this.#seats[hand.playerID];
-
             const payout = this.#ScoreRound(hand, player);
 
             if( payout > 0 ) {
@@ -136,7 +139,7 @@ class Table {
         });
 
         if( this.#shoe.CardsLeft() <= 50) {
-            this.#shoe.Reset();
+            this.#shoe.Shuffle();
         }
         return true;
     }
