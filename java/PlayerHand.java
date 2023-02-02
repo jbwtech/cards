@@ -7,7 +7,7 @@ public class PlayerHand extends Hand
     public boolean canSplit;
     public boolean canDouble;
     
-    public PlayerHand(long playerID)
+    public PlayerHand(int playerID)
     {
         super();
         this.playerID = playerID;
@@ -88,56 +88,25 @@ public class PlayerHand extends Hand
         }
     }
 
-    private void AddCard(PlayerHand hand, Card cardObject) 
+    protected void AddCard(Card cardObject) 
     {
+        super.AddCard(cardObject);
+        
+        if( this.doubled == true ) {
+            this.status = "Stand";
+            return;
+        }
 
-        if( cardObject.Value() == 11) {
-            hand.aces++;
+        if( (this.cards.size() == 2) && (this.cards.get(0).Value() == this.cards.get(1).Value()) ) {
+            this.canSplit = true;
+        } else {
+            this.canSplit = false;
+        }
+        if( this.cards.size() == 2 ) {
+            this.canDouble = true;
+        } else {
+            this.canDouble = false;
         }
     
-        hand.cards.add(cardObject);
-        hand.score = 0;
-        hand.text = "";
-    
-        if(hand.playerID != -1) {
-            if( (hand.cards.size() == 2) && (hand.cards.get(0).Value() == hand.cards.get(1).Value()) ) {
-                hand.canSplit = true;
-            } else {
-                hand.canSplit = false;
-            }
-            if( hand.cards.size() == 2 ) {
-                hand.canDouble = true;
-            } else {
-                hand.canDouble = false;
-            }
-        }
-    
-        hand.cards.forEach((card) -> {
-            hand.score += card.Value();
-            hand.text += card.Text();
-        });
-    
-        var numberOfAces = hand.aces;
-        while( (hand.score > 21) && (numberOfAces > 0) ) {
-            hand.score -= 10;
-            numberOfAces--;
-        }
-    
-        if( hand.score > 21 ) {
-            hand.status = "Busted";
-            return;
-        }
-    
-        if( hand.score == 21 ) {
-            if(hand.cards.size() == 2) {
-                hand.status = "BlackJack!";
-            }
-            return;
-        }
-    
-        if( hand.doubled == true ) {
-            hand.status = "Stand";
-            return;
-        }
-    }    
+    }
 }

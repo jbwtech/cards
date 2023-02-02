@@ -1,8 +1,8 @@
 public class Player extends Person {
 
-    private double stack;
-    private double max_stack;
-    private double bank;
+    public double stack;
+    public double max_stack;
+    public double bank;
     
     Player(String name, double chips) {
         super();
@@ -17,7 +17,7 @@ public class Player extends Person {
 
     public PlayerHand CreateHand( int wager ) {
 
-        Player hand = new PlayerHand();
+        PlayerHand hand = new PlayerHand(this.id);
 
         if( this.stack >= wager ) {
             // Deduct amount from player's stack

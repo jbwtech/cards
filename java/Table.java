@@ -9,6 +9,7 @@ public class Table {
     private Dealer dealer;
     private ArrayList<Player> seats;
     private int minimumBet;
+    private Round round;
 
     Table() {
         this.id = currentID++;
@@ -48,7 +49,7 @@ public class Table {
         this.minimumBet = amount;
     }
 
-    public void GetMinimum() {
+    public int GetMinimum() {
         return this.minimumBet;
     }
 
@@ -56,11 +57,11 @@ public class Table {
         return this.seats.get(playerID);
     }
 
-    public GetWagers() {
+    public void GetWagers() {
 
         ArrayList<PlayerHand> currentHands = new ArrayList<PlayerHand>();
 
-        this.seats.forEach(player) -> {
+        this.seats.forEach((player) -> {
 
             PlayerHand tempHand = new PlayerHand(player.id);
             int currentBet = this.minimumBet * 1;
@@ -82,61 +83,62 @@ public class Table {
                 tempHand.wager = currentBet;
                 currentHands.add(tempHand);
             }
-        }
+        });
 
-        this.round = null;
-
-        if( currentHands.length > 0 ) {
+        if( currentHands.size() > 0 ) {
             this.dealer.hand = new DealerHand();
-            this.round = new Round(this.#shoe, this.#dealer, currentHands);
+            this.round = new Round(this.shoe, this.dealer, currentHands);
         } else {
-            return false;
+            return;
         }
 
         // Check for Dealer Blackjack
         try {
 //            console.log(this.#dealer);
-            if( this.#dealer.hand.UpCard().value == 11) {
+            if( this.dealer.hand.UpCard().Value() == 11) {
 //                console.log("Insurance?");
             }
-        } catch (error) {
+        } catch (Error error) {
             throw error;
         }
 
         if( this.dealer.hand.IsBlackJack() ) {
-            this.dealer.hand.status = "BlackJack!"
+            this.dealer.hand.status = "BlackJack!";
 //            console.log("Dealer has BlackJack!");
 //            console.log(this.#dealer.hand);
-            currentHands.forEach((hand) => {
+            currentHands.forEach((hand) -> {
                 hand.status = (hand.IsBlackJack()) ? "Push" : "Lose";
 //                console.log(hand);
             });
-            return true;
+            return;
         }
 
-        var handCount = 0;
+        // int handCount = 0;
 
-        currentHands.forEach((hand) => {
+        currentHands.forEach((hand) -> {
 //            console.log(`Dealer is showing: ${this.#dealer.hand.UpCard().text}\n`);
-            const player = this.#seats[hand.playerID];
-
+            Player player = this.seats.get(hand.playerID);
             this.PlayHand(hand,player);
-
-            if( (hand.status == "Stand") || (hand.status == "Doubled") ) {
-                handCount++;
-            }
         });
 
-        if( handCount > 0 ) {
+        // currentHands.removeIf((hand) -> (hand.status == "Busted"));
+
+        /*
+        if( (hand.status == "Stand") || (hand.status == "Doubled") ) {
+            handCount++;
+        }
+ */
+
+        if( currentHands.size() > 0 ) {
             this.round.PlayDealer();
         } else {
-            this.#dealer.hand.status = "Reveal";
+            this.dealer.hand.status = "Reveal";
         }
 //        console.log(this.#dealer.hand);
 
-        currentHands.forEach((hand) => {
-            const player = this.#seats[hand.playerID];
-            const payout = this.#ScoreRound(hand, player);
+        currentHands.forEach((hand) -> {
+            Player player = this.seats.get(hand.playerID);
+            double payout = this.ScoreRound(hand);
 
             if( payout > 0 ) {
                 player.GivePayout(payout);
@@ -147,8 +149,57 @@ public class Table {
         if( this.shoe.CardsLeft() <= 50) {
             this.shoe.Shuffle();
         }
-        return true;
+        return;
     }
 
+    private void PlayHand(PlayerHand hand, Player player) {
 
+        boolean simulation = true;
+        
+        // console.log(hand);
+
+        if( simulation == true ) {
+            this.round.AutoPlay(hand, player);
+        } else {
+            this.Play(hand);
+        }
+    }
+
+    private double ScoreRound(PlayerHand hand) {
+        // console.log("Scoring hand ...");
+        
+        if( (this.dealer.hand.IsBlackJack() == false) && (hand.status == "BlackJack!") ) {
+            return hand.wager * 2.5;
+        }
+
+        switch( this.dealer.hand.status ) {
+            case "BlackJack!":
+                if( hand.status == "BlackJack!") {
+                    hand.status = "Push";
+                    return hand.wager * 1.0;
+                }
+                break;
+            case "Busted":
+                if( (hand.status == "Stand") || (hand.status == "Doubled")) {
+                    hand.status = "Win";
+                    return hand.wager * 2.0;
+                }
+                break;
+            case "Stand":
+                if( (hand.status == "Stand") || (hand.status == "Doubled")) {
+                    if( hand.score == this.dealer.hand.score ) {
+                        hand.status = "Push";
+                        return hand.wager * 1.0;
+                    } else if( hand.score > this.dealer.hand.score ) {
+                        hand.status = "Win";
+                        return (hand.wager * 2.0);
+                    } else {
+                        hand.status = "Lose";
+                        return 0;
+                    }
+                }
+                break;
+        }
+        return 0.0;
+    }
 }

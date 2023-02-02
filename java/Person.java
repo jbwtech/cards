@@ -1,8 +1,8 @@
 public class Person {
 
-    protected static long currentID = 0;
+    protected static int currentID = 0;
     
-    protected long id;
+    protected int id;
     protected String name;
     
     Person() {

@@ -1,6 +1,6 @@
 public class Dealer extends Person {
 
-    private DealerHand hand;
+    public DealerHand hand;
 
     Dealer() {
         super();
