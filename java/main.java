@@ -15,7 +15,6 @@ public class main {
         table.ShowPlayers();
 
         Player tempPlayer = table.GetPlayer(0);
-
         tempPlayer.Info();
     }
 }
