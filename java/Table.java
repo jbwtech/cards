@@ -161,7 +161,7 @@ public class Table {
         if( simulation == true ) {
             this.round.AutoPlay(hand, player);
         } else {
-            this.Play(hand);
+            this.round.Play(hand, player);
         }
     }
 
