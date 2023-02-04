@@ -68,7 +68,7 @@ public class Shoe
         this.decksRemaining = (this.shoe.size() / 52 * 100) / 100;
         this.trueCount = (int)(Math.floor(this.runningCount / this.decksRemaining));
 
-        System.out.printf("Running: %f   Decks: %d   True: %d\n", this.runningCount, this.decks, this.trueCount);
+        // System.out.printf("Running: %f   Decks: %d   True: %d\n", this.runningCount, this.decks, this.trueCount);
     }
 
     public int CardsLeft() {
