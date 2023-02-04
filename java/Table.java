@@ -57,7 +57,7 @@ public class Table {
         return this.seats.get(playerID);
     }
 
-    public void GetWagers() {
+    public boolean GetWagers() {
 
         ArrayList<PlayerHand> currentHands = new ArrayList<PlayerHand>();
 
@@ -89,7 +89,7 @@ public class Table {
             this.dealer.hand = new DealerHand();
             this.round = new Round(this.shoe, this.dealer, currentHands);
         } else {
-            return;
+            return false;
         }
 
         // Check for Dealer Blackjack
@@ -110,14 +110,14 @@ public class Table {
                 hand.status = (hand.IsBlackJack()) ? "Push" : "Lose";
 //                console.log(hand);
             });
-            return;
+            return true;
         }
 
         // int handCount = 0;
 
         currentHands.forEach((hand) -> {
 //            console.log(`Dealer is showing: ${this.#dealer.hand.UpCard().text}\n`);
-            Player player = this.seats.get(hand.playerID);
+            Player player = this.seats.get(0);
             this.PlayHand(hand,player);
         });
 
@@ -137,7 +137,7 @@ public class Table {
 //        console.log(this.#dealer.hand);
 
         currentHands.forEach((hand) -> {
-            Player player = this.seats.get(hand.playerID);
+            Player player = this.seats.get(0);
             double payout = this.ScoreRound(hand);
 
             if( payout > 0 ) {
@@ -149,7 +149,7 @@ public class Table {
         if( this.shoe.CardsLeft() <= 50) {
             this.shoe.Shuffle();
         }
-        return;
+        return true;
     }
 
     private void PlayHand(PlayerHand hand, Player player) {
