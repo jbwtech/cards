@@ -92,6 +92,13 @@ public class Table {
             return false;
         }
 
+        return true;
+    }
+
+    public void PlayRound() {
+
+        ArrayList<PlayerHand> currentHands = this.round.GetHands();
+
         // Check for Dealer Blackjack
         try {
 //            console.log(this.#dealer);
@@ -110,7 +117,7 @@ public class Table {
                 hand.status = (hand.IsBlackJack()) ? "Push" : "Lose";
 //                console.log(hand);
             });
-            return true;
+            return;
         }
 
         // int handCount = 0;
@@ -149,7 +156,7 @@ public class Table {
         if( this.shoe.CardsLeft() <= 50) {
             this.shoe.Shuffle();
         }
-        return true;
+        return;
     }
 
     private void PlayHand(PlayerHand hand, Player player) {
