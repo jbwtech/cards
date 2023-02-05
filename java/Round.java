@@ -35,6 +35,10 @@ public class Round {
         this.upcard = this.dealer.hand.UpCard().Value();
     }
 
+    public ArrayList<PlayerHand> GetHands() {
+        return this.hands;
+    }
+    
     public void PlayDealer() {
         while( this.dealer.hand.score < 17 ) {
             this.dealer.hand.GetCard(this.shoe);
