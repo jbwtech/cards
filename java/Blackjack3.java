@@ -18,15 +18,21 @@ public class Blackjack3 {
 
         while( true ) {
             this.numberOfRounds++;
+
+            boolean playRound = table.GetWagers();
+
             // theTable.ShowPlayers();
-            if( ! table.GetWagers() ) {
+            if( ! playRound ) {
                 break;
             };
+            table.PlayRound();
         }
+
         Player player = table.GetPlayer(0);
         double net = player.bank - this.chips;
         System.out.printf("Rounds: %d  Net: %.2f\n", this.numberOfRounds, net);
         this.Finish(net);
+
     }
 
     public void Start() {
