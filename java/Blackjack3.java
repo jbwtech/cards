@@ -4,7 +4,10 @@ public class Blackjack3 {
     private int numberOfCycles;
     private int numberOfRounds;
     private double totalBank;
+    private int maxRounds;
+
     Blackjack3() {
+        this.maxRounds = 100;
         this.totalBank = 0;
         this.chips = 500;
 
@@ -16,7 +19,9 @@ public class Blackjack3 {
 
         this.numberOfRounds = 0;
 
-        while( true ) {
+        Player player = table.GetPlayer(0);
+
+        while( this.numberOfRounds < 50 ) {
             this.numberOfRounds++;
 
             boolean playRound = table.GetWagers();
@@ -25,19 +30,22 @@ public class Blackjack3 {
             if( ! playRound ) {
                 break;
             };
+
+            if( player.stack - this.chips >= 500 ) {
+                break;
+            }
             table.PlayRound();
         }
 
-        Player player = table.GetPlayer(0);
-        double net = player.bank - this.chips;
-        System.out.printf("Rounds: %d  Net: %.2f\n", this.numberOfRounds, net);
+        double net = player.stack - this.chips;
+        System.out.printf("Cycle: %3d  Rounds: %4d  Net: %8.2f  Bank: %12.2f\n", this.numberOfCycles, this.numberOfRounds, net, this.totalBank + net);
         this.Finish(net);
 
     }
 
     public void Start() {
 
-        while( this.numberOfCycles < 1000 ) {
+        while( this.numberOfCycles < this.maxRounds ) {
             Table table = new Table(10);
             String name = "Player";
             table.AddPlayer(name, this.chips);
