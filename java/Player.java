@@ -40,11 +40,6 @@ public class Player extends Person {
         if( this.stack > this.max_stack ) {
             this.max_stack = this.stack;
         }
-
-        if( this.stack >= 550 ) {
-            this.stack -= 50;
-            this.bank += 50;
-        }
     }
 
     public void Info() {
