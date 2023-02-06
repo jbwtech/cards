@@ -1,3 +1,4 @@
+import java.lang.Math;
 
 public class PlayerHand extends Hand
 {
@@ -107,6 +108,122 @@ public class PlayerHand extends Hand
         } else {
             this.canDouble = false;
         }
-    
+    }
+
+    private boolean IsStartingHand() {
+        return (this.cards.size() == 2 ) ? true : false;
+    }
+
+    private boolean IsSoftHand() {
+        return ((this.cards.get(0).Value() == 11) || (this.cards.get(1).Value() == 11)) ? true : false;
+    }
+
+    private String SoftHand(int upcard) {
+
+        String action = "Hit";
+        int lowCard = Math.min(this.cards.get(0).Value(), this.cards.get(1).Value());
+
+        switch( lowCard ) {
+            case 9:
+                action = "Stand";
+                break;
+            case 8:
+                if( upcard == 6 ) {
+                    action = "Double";
+                } else if( (upcard >= 2 && upcard <= 5) || upcard == 7 || upcard == 8 ) {
+                    action = "Stand";
+                }
+                break;
+            case 7:
+                if( upcard >= 2 && upcard <= 6 ) {
+                    action = "Double";
+                }
+                break;
+
+            case 6:
+                if( upcard >= 3 && upcard <= 6 ) {
+                    action = "Double";
+                }
+                break;
+
+            case 5:
+            case 4:
+                if( upcard >= 4 && upcard <= 6 ) {
+                    action = "Double";
+                }
+                break;
+
+            case 3:
+            case 2:
+                if( upcard == 5 && upcard == 6 ) {
+                    action = "Double";
+                }
+                break;
+        }
+        return action;
+    }
+
+    public String Strategy(int upcard) {
+
+        String action = "";
+
+        if( this.IsStartingHand() ) {
+
+            if( this.ShouldSplit(upcard) ) {
+                action = "Split";
+            }
+
+            if( this.ShouldDouble(upcard) ) {
+                action = "Double";
+            }
+
+            if( this.IsSoftHand() ) {
+                action = SoftHand(upcard);
+            } else {
+                action = NormalStrategy(upcard);
+            }
+        } else {
+            action = NormalStrategy(upcard);
+        }
+        return action;
+    }
+
+    private String NormalStrategy(int upcard) {
+        String action = "";
+        switch( this.score ) {
+            case 9:
+                if(upcard >= 3 || upcard <= 6) {
+                    action = "Double";
+                }
+                break;
+            case 10:
+                if(upcard < 10) {
+                    action = "Double";
+                }
+                break;
+            case 11:
+                action = "Double";
+                break;
+            case 12:
+                if(upcard >= 4 || upcard <= 6) {
+                    action = "Stand";
+                }
+                break;
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+                if(upcard <= 6) {
+                    action = "Stand";
+                }
+                break;
+            default:
+                if(this.score >=17) {
+                    action = "Stand";
+                } else {
+                    action = "Hit";
+                }
+        }
+        return action;
     }
 }
