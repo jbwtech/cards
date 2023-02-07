@@ -1,3 +1,4 @@
+import java.io.PipedWriter;
 import java.lang.Math;
 
 public class PlayerHand extends Hand
@@ -217,12 +218,11 @@ public class PlayerHand extends Hand
                     action = "Stand";
                 }
                 break;
-            default:
-                if(this.score >=17) {
-                    action = "Stand";
-                } else {
-                    action = "Hit";
-                }
+        }
+        if( action == "" && this.score < 17 ) {
+            action = "Hit";
+        } else {
+            action = "Stand";
         }
         return action;
     }
