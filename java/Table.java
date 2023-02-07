@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.lang.Math;
 
 public class Table {
 
@@ -9,6 +10,7 @@ public class Table {
     private Dealer dealer;
     private ArrayList<Player> seats;
     private int minimumBet;
+    private int maximumBet;
     private Round round;
 
     Table() {
@@ -17,6 +19,7 @@ public class Table {
         this.dealer = new Dealer();
         this.seats = new ArrayList<Player>();
         this.minimumBet = 10;
+        this.maximumBet = 100;
     }
 
     Table(int minimumBet) {
@@ -67,7 +70,8 @@ public class Table {
             int currentBet = this.minimumBet * 1;
 
             if(this.shoe.TrueCount() > 2) {
-                currentBet *= (this.shoe.TrueCount() - 1);
+                currentBet = Math.min(this.maximumBet, (currentBet * this.shoe.TrueCount() - 1));
+                // currentBet *= (this.shoe.TrueCount() - 1);
             }
 
             if(this.shoe.TrueCount() < 0) {
