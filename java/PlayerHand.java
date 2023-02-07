@@ -226,4 +226,20 @@ public class PlayerHand extends Hand
         }
         return action;
     }
+
+    public ArrayList<PlayerHand> Split() {
+
+        ArrayList<PlayerHand> theSplitHands = new ArrayList<PlayerHand>();
+
+        PlayerHand firstHand = new PlayerHand(this.playerID);
+        PlayerHand secondHand = new PlayerHand(this.playerID);
+
+        firstHand.cards.set(0) = this.cards.get(0);
+        secondHand.cards.set(0) = this.cards.get(1);
+
+        theSplitHands.add(firstHand);
+        thesplitHands.add(secondHand);
+
+        return theSplitHands;
+    }
 }
