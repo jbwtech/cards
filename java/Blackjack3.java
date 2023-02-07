@@ -8,8 +8,8 @@ public class Blackjack3 {
 
     Blackjack3() {
         this.maxRounds = 100;
-        this.totalBank = 0;
-        this.chips = 500;
+        this.totalBank = 100000;
+        this.chips = 1000;
 
         this.numberOfRounds = 0;
         this.numberOfCycles = 0;
@@ -30,16 +30,21 @@ public class Blackjack3 {
                 break;
             };
 
-            if( (player.stack - this.chips) >= 500 ) {
+            if( player.stack >= 2500 ) {
                 break;
             }
+
+            if( player.stack == 0 ) {
+                break;
+            }
+
             table.PlayRound();
             this.numberOfRounds++;
         }
 
         double net = player.stack - this.chips;
         System.out.printf("Cycle: %3d  Rounds: %4d  Stack: %8.2f\n", this.numberOfCycles, this.numberOfRounds, player.stack);
-        this.Finish(net);
+        this.Finish(player.stack);
 
     }
 
@@ -48,15 +53,16 @@ public class Blackjack3 {
         while( this.numberOfCycles < 100 ) {
             Table table = new Table(10);
             String name = "Player";
+            this.totalBank -= this.chips;
             table.AddPlayer(name, this.chips);
             this.numberOfCycles++;
             this.PlayUntilBust(table);
         }
-        System.out.printf("Cycles: %d  Stack: %.2f\n", this.numberOfCycles, this.totalBank);
+        System.out.printf("Cycles: %d  Bank: %.2f\n", this.numberOfCycles, this.totalBank);
     }
 
-    private void Finish(double net) {
-        this.totalBank += net;
+    private void Finish(double stack) {
+        this.totalBank += stack;
     }
 }
 
