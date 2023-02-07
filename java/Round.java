@@ -38,7 +38,7 @@ public class Round {
     public ArrayList<PlayerHand> GetHands() {
         return this.hands;
     }
-    
+
     public void PlayDealer() {
         while( this.dealer.hand.score < 17 ) {
             this.dealer.hand.GetCard(this.shoe);
@@ -58,11 +58,6 @@ public class Round {
         int counter = 0;
         outside_while:
         while(hand.status == "Open") {
-
-            counter++;
-            if( counter > 6 ) {
-                System.out.println(hand.text);
-            }
 
             switch(hand.Strategy(this.upcard)) {
                 case "Hit":
@@ -93,6 +88,8 @@ public class Round {
                 hand.status = "Busted";
             }
         }
+        // System.out.println(hand.text);
+        // System.out.println(hand.status);
     }
         
 }
