@@ -131,7 +131,7 @@ public class Table {
             for(Player player : this.seats) {
                 if( player.id == currentHands.get(i).playerID) {
                     this.PlayHand(currentHands.get(i),player,i);
-            }
+                }
             }
         }
 /*
