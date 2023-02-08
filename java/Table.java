@@ -72,7 +72,6 @@ public class Table {
 
             if(this.shoe.TrueCount() > 2) {
                 currentBet = Math.min(this.maximumBet, (currentBet * (this.shoe.TrueCount() - 1)));
-                // currentBet *= (this.shoe.TrueCount() - 1);
             }
 
             if(this.shoe.TrueCount() < 0) {
@@ -106,7 +105,6 @@ public class Table {
 
         // Check for Dealer Blackjack
         try {
-//            console.log(this.#dealer);
             if( this.dealer.hand.UpCard().Value() == 11) {
 //                console.log("Insurance?");
             }
@@ -116,16 +114,11 @@ public class Table {
 
         if( this.dealer.hand.IsBlackJack() ) {
             this.dealer.hand.status = "BlackJack!";
-//            console.log("Dealer has BlackJack!");
-//            console.log(this.#dealer.hand);
             currentHands.forEach((hand) -> {
                 hand.status = (hand.IsBlackJack()) ? "Push" : "Lose";
-//                console.log(hand);
             });
             return;
         }
-
-        // int handCount = 0;
 
         for(int i=0; i < currentHands.size(); i++) {
             for(Player player : this.seats) {
@@ -134,29 +127,12 @@ public class Table {
                 }
             }
         }
-/*
-        currentHands.forEach((hand) -> {
-//            console.log(`Dealer is showing: ${this.#dealer.hand.UpCard().text}\n`);
-            Player player = this.seats.get(0);
-            this.PlayHand(hand,player);
-        });
- * 
- */
-
-        // currentHands.removeIf((hand) -> (hand.status == "Busted"));
-
-        /*
-        if( (hand.status == "Stand") || (hand.status == "Doubled") ) {
-            handCount++;
-        }
- */
 
         if( currentHands.size() > 0 ) {
             this.round.PlayDealer();
         } else {
             this.dealer.hand.status = "Reveal";
         }
-//        console.log(this.#dealer.hand);
 
         currentHands.forEach((hand) -> {
             Player player = this.seats.get(0);
@@ -165,7 +141,6 @@ public class Table {
             if( payout > 0 ) {
                 player.GivePayout(payout);
             }
-//            console.log(hand);
         });
 
         if( this.shoe.CardsLeft() <= 50) {
