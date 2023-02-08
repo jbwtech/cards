@@ -19,7 +19,7 @@ public class Table {
         this.dealer = new Dealer();
         this.seats = new ArrayList<Player>();
         this.minimumBet = 10;
-        this.maximumBet = 100;
+        this.maximumBet = 200;
     }
 
     Table(int minimumBet) {
@@ -28,6 +28,7 @@ public class Table {
         this.dealer = new Dealer();
         this.seats = new ArrayList<Player>();
         this.minimumBet = minimumBet;
+        this.maximumBet = minimumBet * 20;
     }
 
     public long ID() {
@@ -70,18 +71,18 @@ public class Table {
             int currentBet = this.minimumBet * 1;
 
             if(this.shoe.TrueCount() > 2) {
-                currentBet = Math.min(this.maximumBet, (currentBet * this.shoe.TrueCount() - 1));
+                currentBet = Math.min(this.maximumBet, (currentBet * (this.shoe.TrueCount() - 1)));
                 // currentBet *= (this.shoe.TrueCount() - 1);
             }
 
             if(this.shoe.TrueCount() < 0) {
                 currentBet *= this.minimumBet;
             }
-/*
-            if(player.stack >= 750 || player.stack <= 100) {
-                return false;
+
+            if(currentBet == 0) {
+                throw new Error("No Bet");
             }
-*/
+
             if(player.stack >= currentBet) {
                 player.stack -= currentBet;
                 tempHand.wager = currentBet;
@@ -126,11 +127,21 @@ public class Table {
 
         // int handCount = 0;
 
+        for(int i=0; i < currentHands.size(); i++) {
+            for(Player player : this.seats) {
+                if( player.id == currentHands.get(i).playerID) {
+                    this.PlayHand(currentHands.get(i),player,i);
+            }
+            }
+        }
+/*
         currentHands.forEach((hand) -> {
 //            console.log(`Dealer is showing: ${this.#dealer.hand.UpCard().text}\n`);
             Player player = this.seats.get(0);
             this.PlayHand(hand,player);
         });
+ * 
+ */
 
         // currentHands.removeIf((hand) -> (hand.status == "Busted"));
 
@@ -163,16 +174,16 @@ public class Table {
         return;
     }
 
-    private void PlayHand(PlayerHand hand, Player player) {
+    private void PlayHand(PlayerHand hand, Player player, int handIndex) {
 
         boolean simulation = true;
         
         // console.log(hand);
 
         if( simulation == true ) {
-            this.round.AutoPlay(hand, player);
+            this.round.AutoPlay(hand, player, handIndex);
         } else {
-            this.round.Play(hand, player);
+            this.round.Play(hand, player, handIndex);
         }
     }
 
