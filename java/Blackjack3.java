@@ -42,8 +42,8 @@ public class Blackjack3 {
             this.numberOfRounds++;
         }
 
-        double net = player.stack - this.chips;
-        System.out.printf("Cycle: %3d  Rounds: %4d  Stack: %8.2f\n", this.numberOfCycles, this.numberOfRounds, player.stack);
+        System.out.printf("Cycle: %3d  Rounds: %4d  Stack: %8.2f  Max: %8.2f\n", this.numberOfCycles, this.numberOfRounds, 
+            player.stack, player.max_stack);
         this.Finish(player.stack);
 
     }
