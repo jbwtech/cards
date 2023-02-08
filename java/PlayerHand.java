@@ -1,5 +1,6 @@
 import java.io.PipedWriter;
 import java.lang.Math;
+import java.util.ArrayList;
 
 public class PlayerHand extends Hand
 {
@@ -172,6 +173,7 @@ public class PlayerHand extends Hand
 
             if( this.ShouldSplit(upcard) ) {
                 action = "Split";
+                // return action;
             }
 
             if( this.ShouldDouble(upcard) ) {
@@ -234,11 +236,11 @@ public class PlayerHand extends Hand
         PlayerHand firstHand = new PlayerHand(this.playerID);
         PlayerHand secondHand = new PlayerHand(this.playerID);
 
-        firstHand.cards.set(0) = this.cards.get(0);
-        secondHand.cards.set(0) = this.cards.get(1);
+        firstHand.AddCard(this.cards.get(0));
+        secondHand.AddCard(this.cards.get(1));
 
         theSplitHands.add(firstHand);
-        thesplitHands.add(secondHand);
+        theSplitHands.add(secondHand);
 
         return theSplitHands;
     }
