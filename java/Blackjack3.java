@@ -30,10 +30,6 @@ public class Blackjack3 {
                 break;
             };
 
-            if( player.stack >= 2500 ) {
-                break;
-            }
-
             if( player.stack == 0 ) {
                 break;
             }
