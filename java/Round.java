@@ -47,17 +47,18 @@ public class Round {
         this.dealer.hand.status = (this.dealer.hand.score > 21) ? "Busted" : "Stand";
     }
 
-    public void Play(PlayerHand hand, Player player) {
+    public void Play(PlayerHand hand, Player player, int index) {
         
     }
 
-    public void AutoPlay(PlayerHand hand, Player player) {
+    public void AutoPlay(PlayerHand hand, Player player, int index) {
 
-//        console.log("AutoPlay ...");
-
-        int counter = 0;
         outside_while:
         while(hand.status == "Open") {
+
+            if(hand.cards.size() < 2) {
+                hand.GetCard(this.shoe);
+            }
 
             switch(hand.Strategy(this.upcard)) {
                 case "Hit":
@@ -69,7 +70,6 @@ public class Round {
                         hand.wager *= 2;
                         hand.status = "Doubled";
                         hand.doubled = true;
-    //                    console.log("Hit ...");
                         hand.GetCard(this.shoe);
                         break outside_while;
                     } else {
@@ -77,7 +77,10 @@ public class Round {
                     }
                     break;
                 case "Split":
-                    System.out.println("Split");
+                    ArrayList<PlayerHand> splitHands = hand.Split();
+                    this.hands.remove(index);
+                    this.hands.addAll(index, splitHands);
+                    hand = this.hands.get(index);
                     break;
                 case "Stand":
                     hand.status = "Stand";
