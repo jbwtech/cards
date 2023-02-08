@@ -15,6 +15,12 @@ public class Blackjack3 {
         this.numberOfCycles = 0;
     }
     
+    public static void main(String arg[])
+    {
+        Blackjack3 blackjack = new Blackjack3();
+        blackjack.Start();
+    }
+
     private void PlayUntilBust(Table table) {
 
         this.numberOfRounds = 0;
