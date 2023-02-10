@@ -53,7 +53,7 @@ public class Hand
             this.text += currentCard.Text();
         });
     
-        var numberOfAces = this.aces;
+        int numberOfAces = this.aces;
         while( (this.score > 21) && (numberOfAces > 0) ) {
             this.score -= 10;
             numberOfAces--;
